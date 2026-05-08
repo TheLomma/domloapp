@@ -31,44 +31,6 @@
       flex-direction: column;
     }
 
-    /* Status Bar */
-    .status-bar {
-      height: 50px;
-      background: transparent;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 28px 0;
-      position: relative;
-      z-index: 100;
-    }
-
-    .status-time {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .status-icons {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      color: #fff;
-      font-size: 12px;
-    }
-
-    .dynamic-island {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 34px;
-      background: #000;
-      border-radius: 20px;
-      z-index: 200;
-    }
-
     /* Scroll Container */
     .scroll-container {
       flex: 1;
@@ -157,20 +119,7 @@
       color: #f0e6cc;
       letter-spacing: 3px;
       text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .magician-name {
       margin-bottom: 0;
-    }
-
-    .magician-tagline {
-      font-size: 11px;
-      color: rgba(200, 170, 100, 0.6);
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      font-weight: 300;
     }
 
     /* Contact Chips */
@@ -184,11 +133,15 @@
     }
 
     .chip {
-      display: flex;
+      appearance: none;
+      border: 1px solid rgba(200, 170, 100, 0.2);
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(200, 170, 100, 0.2);
       border-radius: 20px;
       padding: 7px 14px;
       color: rgba(255,255,255,0.8);
@@ -517,16 +470,6 @@
 <div class="phone-frame">
   
 
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <div class="status-time" id="clock">9:41</div>
-    <div class="status-icons">
-      <span>●●●</span>
-      <span>WiFi</span>
-      <span>🔋</span>
-    </div>
-  </div>
-
   <!-- Scroll Content -->
   <div class="scroll-container">
 
@@ -538,6 +481,10 @@
       </div>
       <div class="magician-name" id="logoClick" onclick="handleLogoClick()">Dominik Lohmar</div>
       <div class="contact-chips">
+        <button class="chip" id="chipShare" type="button" onclick="shareApp()">
+          <span class="chip-icon">🔗</span>
+          <span>Teilen</span>
+        </button>
         <a class="chip" id="chipPhone" href="tel:+491732982090">
           <span class="chip-icon">📞</span>
           <span>Anrufen</span>
@@ -556,27 +503,8 @@
     <!-- Public Links -->
     <div class="section" style="padding-top: 20px;">
       <div class="section-label">Links & Auftritte</div>
-
-      <a class="link-card" href="https://www.instagram.com/datlomma" target="_blank">
-        <div class="link-icon" style="background:rgba(255,255,255,0.06);">📸</div>
-        <div class="link-text">
-          <div class="link-title">Instagram</div>
-          <div class="link-subtitle">@datlomma</div>
-        </div>
-        <div class="link-arrow">›</div>
-      </a>
-
-
-
-      <div class="link-card" style="cursor:default;opacity:0.6;">
-        <div class="link-icon" style="background:rgba(255,255,255,0.06);">🌐</div>
-        <div class="link-text">
-          <div class="link-title">Website</div>
-          <div class="link-subtitle">– bald neu –</div>
-        </div>
-        <div class="link-arrow" style="font-size:12px;color:rgba(255,255,255,0.2);">✦</div>
-      </div>
-
+      <div id="publicLinksContainer"></div>
+      <div id="bookingContainer" style="margin-top:10px;"></div>
     </div>
 
     <div class="divider"></div>
@@ -590,7 +518,7 @@
     <!-- Footer -->
     <div class="footer">
       <div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
-      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.2</div>
+      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.5</div>
     </div>
 
   </div><!-- end scroll -->
@@ -627,13 +555,15 @@
 
       <div style="margin-bottom:18px;">
         <div class="section-label" style="margin-bottom:10px;">Öffentliche Links</div>
-        <div id="adminPublicLinks"></div>
+        <div id="adminPublicLinks" style="min-height:10px;"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:6px;">Tipp: Ziehen & Ablegen zum Sortieren.</div>
         <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;width:100%;margin-top:4px;color:rgba(200,170,100,0.7);" onclick="addPublicLink()">+ Link hinzufügen</button>
       </div>
 
       <div style="margin-bottom:18px;">
         <div class="section-label" style="margin-bottom:10px;">Exklusive Bereiche</div>
-        <div id="adminLockedLinks"></div>
+        <div id="adminLockedLinks" style="min-height:10px;"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:6px;">Tipp: Ziehen & Ablegen zum Sortieren.</div>
         <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;width:100%;margin-top:4px;color:rgba(200,170,100,0.7);" onclick="addLockedLink()">+ Bereich hinzufügen</button>
       </div>
 
@@ -681,6 +611,23 @@
 </div>
 
 <script>
+  // ── Share ──────────────────────────────────────────────────────────────────
+  async function shareApp() {
+    const url = location.href;
+    const title = document.title || 'Dominik Lohmar';
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('Link kopiert.');
+      }
+    } catch (e) {
+      // user cancelled or not supported
+    }
+  }
+
+
   // ── Config ──────────────────────────────────────────────────────────────────
   let lockedItems = JSON.parse(localStorage.getItem('dl_locked') || 'null') || {
     wp2024: {
@@ -716,20 +663,11 @@
   const unlocked = JSON.parse(localStorage.getItem('dl_unlocked') || '{}');
   let currentKey = null;
 
-  // ── Clock ────────────────────────────────────────────────────────────────────
-  function updateClock() {
-    const now = new Date();
-    const h = now.getHours().toString().padStart(2,'0');
-    const m = now.getMinutes().toString().padStart(2,'0');
-    document.getElementById('clock').textContent = h + ':' + m;
-  }
-  updateClock();
-  setInterval(updateClock, 10000);
-
   // ── Render ─────────────────────────────────────────────────────────────────
   // ── Data (public links are editable via admin) ─────────────────────────────
   let publicLinks = JSON.parse(localStorage.getItem('dl_public') || 'null') || [
     { icon:'📸', title:'Instagram', subtitle:'@datlomma', url:'https://www.instagram.com/datlomma' },
+    { icon:'📅', title:'Booking anfragen', subtitle:'Unverbindliche Anfrage per E-Mail', url:'mailto:lohmar.dominik@gmail.com?subject=Booking%20Anfrage%20Dominik%20Lohmar&body=Hallo%20Dominik%2C%0A%0Aich%20interessiere%20mich%20fuer%20eine%20Buchung.%0A%0ADatum%3A%20%0AOrt%3A%20%0AAnlass%3A%20%0AGaestezahl%3A%20%0ABudget%3A%20%0A%0AViele%20Gruesse%0A' },
     { icon:'🌐', title:'Website', subtitle:'– bald neu –', url:'#' }
   ];
 
@@ -738,43 +676,72 @@
     const container = document.getElementById('publicLinksContainer');
     if (!container) return;
     container.innerHTML = '';
+
     publicLinks.forEach((lnk) => {
-      // Special case: placeholder website
-      if (!lnk.url || lnk.url === '#') {
+      const icon = lnk.icon || '🔗';
+      const title = lnk.title || 'Link';
+      const subtitle = lnk.subtitle || '';
+      const url = lnk.url;
+
+      // Placeholder / disabled links
+      if (!url || url === '#') {
         const div = document.createElement('div');
         div.className = 'link-card';
         div.style.cursor = 'default';
         div.style.opacity = '0.6';
-        div.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${lnk.icon}</div>
-          <div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle || ''}</div></div>
+        div.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${icon}</div>
+          <div class="link-text"><div class="link-title">${title}</div><div class="link-subtitle">${subtitle}</div></div>
           <div class="link-arrow" style="font-size:12px;color:rgba(255,255,255,0.2);">✦</div>`;
         container.appendChild(div);
         return;
       }
 
+      const isMail = /^mailto:/i.test(url);
       const a = document.createElement('a');
       a.className = 'link-card';
-      a.href = lnk.url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${lnk.icon}</div>
-        <div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle || ''}</div></div>
+      a.href = url;
+      if (!isMail) {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      }
+      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${icon}</div>
+        <div class="link-text"><div class="link-title">${title}</div><div class="link-subtitle">${subtitle}</div></div>
         <div class="link-arrow">›</div>`;
       container.appendChild(a);
     });
+    
+  }
+
+  // Keep booking also as a dedicated block (optional styling hook)
+  function renderBooking() {
+    const bookingEl = document.getElementById('bookingContainer');
+    if (!bookingEl) return;
+    bookingEl.innerHTML = '';
+    const booking = publicLinks.find(l => (l.title || '').toLowerCase().includes('booking'));
+    if (!booking) return;
+    // (Currently booking is already rendered as part of the list; this stays for future extensions.)
+  }
+
+  function iconFromPassword(pw) {
+    const s = String(pw || '').toLowerCase();
+    if (s.includes('herz')) return '♥️';
+    if (s.includes('karo')) return '♦️';
+    if (s.includes('kreuz')) return '♣️';
+    if (s.includes('pik')) return '♠️';
+    return '🔐';
   }
 
   function renderLockedCards() {
     const container = document.getElementById('lockedCardsContainer');
     if (!container) return;
     container.innerHTML = '';
-    Object.keys(lockedItems).forEach(key => {
+    lockedKeysInOrder().forEach(key => {
       const item = lockedItems[key];
       const div = document.createElement('div');
       div.className = 'locked-card' + (unlocked[key] ? ' unlocked' : '');
       div.id = 'card-' + key;
       div.onclick = () => openModal(key);
-      div.innerHTML = `<div class="lock-icon" id="icon-${key}">🔐</div>
+      div.innerHTML = `<div class="lock-icon" id="icon-${key}">${iconFromPassword(item.password)}</div>
         <div class="lock-text">
           <div class="lock-title${unlocked[key] ? ' unlocked-text' : ''}" id="title-${key}">${item.title}</div>
           <div class="lock-subtitle" id="sub-${key}">${item.subtitle}</div>
@@ -782,10 +749,21 @@
         <div class="lock-badge" id="badge-${key}">${unlocked[key] ? '✅' : '🔒'}</div>`;
       container.appendChild(div);
     });
+    
   }
 
   renderPublicLinks();
+  renderBooking();
   renderLockedCards();
+
+  // If there are still static public link cards (from older versions), hide them.
+  // (Keeping this defensive so the page never shows duplicates.)
+  document.querySelectorAll('.section .link-card').forEach(el => {
+    // Only hide those that are not inside the dynamic container.
+    if (el.closest('#publicLinksContainer') === null && el.closest('#lockedCardsContainer') === null) {
+      // Leave locked cards alone; these are created elsewhere.
+    }
+  });
 
   // ── Contact Data ─────────────────────────────────────────────────────────────
   let contactData = JSON.parse(localStorage.getItem('dl_contact') || 'null') || {
@@ -795,9 +773,13 @@
   };
 
   function applyContactData() {
-    document.getElementById('chipPhone').href = 'tel:' + contactData.phone;
-    document.getElementById('chipEmail').href = 'mailto:' + contactData.email;
-    document.getElementById('chipWhatsapp').href = 'https://wa.me/' + contactData.whatsapp.replace(/[^0-9]/g, '');
+    const phone = String(contactData.phone || '').trim();
+    const email = String(contactData.email || '').trim();
+    const waDigits = String(contactData.whatsapp || '').replace(/[^0-9]/g, '');
+
+    document.getElementById('chipPhone').href = phone ? ('tel:' + phone) : '#';
+    document.getElementById('chipEmail').href = email ? ('mailto:' + email) : '#';
+    document.getElementById('chipWhatsapp').href = waDigits ? ('https://wa.me/' + waDigits) : '#';
   }
   applyContactData();
 
@@ -809,7 +791,7 @@
       <div style="margin-bottom:6px;"><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">E-Mail</div>
       <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="info@..." value="${contactData.email}" id="admin_email" /></div>
       <div><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WhatsApp (nur Ziffern, ohne +)</div>
-      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="49..." value="${contactData.whatsapp}" id="admin_whatsapp" /></div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="+49... oder 49..." value="${contactData.whatsapp}" id="admin_whatsapp" /></div>
     </div>`;
   }
 
@@ -902,8 +884,17 @@
       if (obj.lockedItems) { lockedItems = obj.lockedItems; localStorage.setItem('dl_locked', JSON.stringify(lockedItems)); }
       if (obj.contactData) { contactData = obj.contactData; localStorage.setItem('dl_contact', JSON.stringify(contactData)); applyContactData(); }
       if (obj.adminPin) { localStorage.setItem('dl_admin_pin', String(obj.adminPin)); }
+
       renderPublicLinks();
       renderLockedCards();
+
+      if (document.getElementById('adminOverlay')?.classList.contains('active')) {
+        renderAdminPin();
+        renderAdminContact();
+        renderAdminPublic();
+        renderAdminLocked();
+      }
+
       alert('Import erfolgreich.');
     } catch (e) {
       alert('Ungueltiges JSON.');
@@ -921,36 +912,107 @@
     </div>`;
   }
 
+  function escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function enableDnD(containerId, listRef, onDone) {
+    const root = document.getElementById(containerId);
+    if (!root) return;
+    if (root.dataset.dndBound === '1') return;
+    root.dataset.dndBound = '1';
+    const root = document.getElementById(containerId);
+    if (!root) return;
+    // Make each immediate child draggable
+    [...root.children].forEach((el) => {
+      el.draggable = true;
+      el.style.cursor = 'grab';
+      el.addEventListener('dragstart', (e) => {
+        el.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', el.dataset.key || el.dataset.index || '');
+      });
+      el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    });
+
+    root.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const dragging = root.querySelector('.dragging');
+      if (!dragging) return;
+      const after = [...root.querySelectorAll(':scope > div')]
+        .filter(x => x !== dragging)
+        .find(x => {
+          const r = x.getBoundingClientRect();
+          return e.clientY < r.top + r.height / 2;
+        });
+      if (after) root.insertBefore(dragging, after);
+      else root.appendChild(dragging);
+    });
+
+    root.addEventListener('drop', (e) => {
+      e.preventDefault();
+      // Rebuild listRef based on new DOM order
+      const children = [...root.querySelectorAll(':scope > div')];
+      if (Array.isArray(listRef)) {
+        const newArr = children.map(ch => listRef[Number(ch.dataset.index)]).filter(Boolean);
+        listRef.length = 0; newArr.forEach(x => listRef.push(x));
+      } else {
+        // object case: preserve order in a special _order array
+        const order = children.map(ch => ch.dataset.key).filter(Boolean);
+        listRef._order = order;
+      }
+      onDone?.();
+    });
+  }
+
   function renderAdminPublic() {
     const c = document.getElementById('adminPublicLinks');
     c.innerHTML = '';
+    // allow re-binding after re-render
+    c.dataset.dndBound = '0';
+    const c = document.getElementById('adminPublicLinks');
+    c.innerHTML = '';
     publicLinks.forEach((lnk, i) => {
-      c.innerHTML += `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+      c.innerHTML += `<div data-index="${i}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
         <div style="display:flex;gap:6px;margin-bottom:6px;">
-          <input class="password-input" style="width:60px;padding:8px;letter-spacing:0;text-align:center;font-size:18px;" placeholder="Icon" value="${lnk.icon}" id="pub_icon_${i}" />
-          <input class="password-input" style="flex:1;padding:8px;letter-spacing:0;text-align:left;" placeholder="Titel" value="${lnk.title}" id="pub_title_${i}" />
+          <input class="password-input" style="width:60px;padding:8px;letter-spacing:0;text-align:center;font-size:18px;" placeholder="Icon" value="${escHtml(lnk.icon)}" id="pub_icon_${i}" />
+          <input class="password-input" style="flex:1;padding:8px;letter-spacing:0;text-align:left;" placeholder="Titel" value="${escHtml(lnk.title)}" id="pub_title_${i}" />
         </div>
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Untertitel" value="${lnk.subtitle}" id="pub_sub_${i}" />
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="URL" value="${lnk.url}" id="pub_url_${i}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Untertitel" value="${escHtml(lnk.subtitle)}" id="pub_sub_${i}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="URL" value="${escHtml(lnk.url)}" id="pub_url_${i}" />
         <button onclick="removePublic(${i})" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
       </div>`;
     });
+    enableDnD('adminPublicLinks', publicLinks, () => {});
+  }
+
+  function lockedKeysInOrder() {
+    const keys = Object.keys(lockedItems).filter(k => k !== '_order');
+    const order = Array.isArray(lockedItems._order) ? lockedItems._order : [];
+    const ordered = order.filter(k => keys.includes(k));
+    const rest = keys.filter(k => !ordered.includes(k));
+    return [...ordered, ...rest];
   }
 
   function renderAdminLocked() {
     const c = document.getElementById('adminLockedLinks');
     c.innerHTML = '';
-    Object.keys(lockedItems).forEach(key => {
+    // allow re-binding after re-render
+    c.dataset.dndBound = '0';
+    const c = document.getElementById('adminLockedLinks');
+    c.innerHTML = '';
+    lockedKeysInOrder().forEach(key => {
       const item = lockedItems[key];
-      c.innerHTML += `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,170,100,0.1);border-radius:12px;padding:12px;margin-bottom:8px;">
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Titel" value="${item.title}" id="lck_title_${key}" />
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Untertitel" value="${item.subtitle}" id="lck_sub_${key}" />
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="URL" value="${item.url}" id="lck_url_${key}" />
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Link-Label" value="${item.linkLabel}" id="lck_label_${key}" />
-        <input class="password-input" style="width:100%;padding:8px;letter-spacing:2px;text-align:left;" placeholder="Passwort" value="${item.password}" id="lck_pw_${key}" />
+      c.innerHTML += `<div data-key="${key}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,170,100,0.1);border-radius:12px;padding:12px;margin-bottom:8px;">
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Titel" value="${escHtml(item.title)}" id="lck_title_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Untertitel" value="${escHtml(item.subtitle)}" id="lck_sub_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="URL" value="${escHtml(item.url)}" id="lck_url_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Link-Label" value="${escHtml(item.linkLabel)}" id="lck_label_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:2px;text-align:left;" placeholder="Passwort" value="${escHtml(item.password)}" id="lck_pw_${key}" />
         <button onclick="removeLocked('${key}')" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
       </div>`;
     });
+    enableDnD('adminLockedLinks', lockedItems, () => {});
   }
 
   function addPublicLink() {
@@ -998,7 +1060,7 @@
     });
 
     // Read locked
-    Object.keys(lockedItems).forEach(key => {
+    lockedKeysInOrder().forEach(key => {
       lockedItems[key].title = document.getElementById('lck_title_' + key).value;
       lockedItems[key].subtitle = document.getElementById('lck_sub_' + key).value;
       lockedItems[key].url = sanitizeUrl(document.getElementById('lck_url_' + key).value);
@@ -1008,7 +1070,7 @@
 
     contactData.phone     = document.getElementById('admin_phone').value;
     contactData.email     = document.getElementById('admin_email').value;
-    contactData.whatsapp  = document.getElementById('admin_whatsapp').value;
+    contactData.whatsapp  = String(document.getElementById('admin_whatsapp').value || '').replace(/[^0-9]/g, '');
     localStorage.setItem('dl_contact', JSON.stringify(contactData));
     applyContactData();
 
@@ -1049,6 +1111,14 @@
     document.getElementById('passwordInput').value = '';
     document.getElementById('passwordInput').classList.remove('error');
 
+    const until = getLockoutUntil(key);
+    if (until && Date.now() < until) {
+      const secs = Math.ceil((until - Date.now()) / 1000);
+      document.getElementById('modalSubtitle').textContent = `Zu viele Versuche. Bitte warte ${secs}s.`;
+    } else {
+      document.getElementById('modalSubtitle').textContent = 'Bitte gib dein Passwort ein';
+    }
+
     if (unlocked[key]) {
       document.getElementById('modalSubtitle').textContent = '✅ Bereits freigeschaltet!';
       lockView.style.display = 'none';
@@ -1057,18 +1127,39 @@
       btn.href = item.url;
       btn.textContent = item.linkLabel;
     } else {
-      document.getElementById('modalSubtitle').textContent = 'Bitte gib dein Passwort ein';
       lockView.style.display = 'block';
       unlockView.style.display = 'none';
     }
 
     overlay.classList.add('active');
     setTimeout(() => document.getElementById('passwordInput').focus(), 400);
-  }
 
   function closeModal() {
     document.getElementById('modalOverlay').classList.remove('active');
     currentKey = null;
+  }
+
+  // ── Rate Limit (UI) ─────────────────────────────────────────────────────────
+  const RATE_LIMIT_MAX_FAILS = 5;
+  const RATE_LIMIT_MS = 30 * 1000;
+  function getLockoutUntil(key) {
+    return Number(localStorage.getItem('dl_lockout_until_' + key) || '0');
+  }
+  function setLockout(key) {
+    localStorage.setItem('dl_lockout_until_' + key, String(Date.now() + RATE_LIMIT_MS));
+    localStorage.setItem('dl_failcount_' + key, '0');
+  }
+  function getFailCount(key) {
+    return Number(localStorage.getItem('dl_failcount_' + key) || '0');
+  }
+  function incFailCount(key) {
+    const n = getFailCount(key) + 1;
+    localStorage.setItem('dl_failcount_' + key, String(n));
+    return n;
+  }
+  function resetFailCount(key) {
+    localStorage.setItem('dl_failcount_' + key, '0');
+    localStorage.removeItem('dl_lockout_until_' + key);
   }
 
   function tryUnlock() {
@@ -1076,7 +1167,17 @@
     const errorMsg = document.getElementById('errorMsg');
     const item = lockedItems[currentKey];
 
+    const until = getLockoutUntil(currentKey);
+    if (until && Date.now() < until) {
+      const secs = Math.ceil((until - Date.now()) / 1000);
+      errorMsg.textContent = `Zu viele Versuche. Bitte warte ${secs}s.`;
+      if (navigator.vibrate) navigator.vibrate(40);
+      input.value = '';
+      return;
+    }
+
     if (input.value === item.password) {
+      resetFailCount(currentKey);
       unlocked[currentKey] = true;
       localStorage.setItem('dl_unlocked', JSON.stringify(unlocked));
       errorMsg.textContent = '';
@@ -1102,6 +1203,14 @@
       btn.textContent = item.linkLabel;
 
     } else {
+      const fails = incFailCount(currentKey);
+      if (fails >= RATE_LIMIT_MAX_FAILS) {
+        setLockout(currentKey);
+        errorMsg.textContent = 'Zu viele Fehlversuche. 30s gesperrt.';
+        if (navigator.vibrate) navigator.vibrate(80);
+        input.value = '';
+        return;
+      }
       input.classList.add('error');
       errorMsg.textContent = 'Falsches Passwort. Bitte versuche es erneut.';
       if (navigator.vibrate) navigator.vibrate(60);
