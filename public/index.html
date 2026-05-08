@@ -463,6 +463,20 @@
     }
 
     .unlocked-link-btn:hover { opacity: 0.85; }
+
+    /* Admin Drag & Drop visuals */
+    #adminPublicLinks.drag-over,
+    #adminLockedLinks.drag-over {
+      outline: 1px dashed rgba(200,170,100,0.35);
+      outline-offset: 6px;
+      border-radius: 10px;
+    }
+
+    #adminPublicLinks .dragging,
+    #adminLockedLinks .dragging {
+      opacity: 0.6;
+      transform: scale(0.99);
+    }
   </style>
 </head>
 <body>
@@ -787,11 +801,12 @@
     const c = document.getElementById('adminContactFields');
     c.innerHTML = `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
       <div style="margin-bottom:6px;"><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Telefon</div>
-      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="+49..." value="${contactData.phone}" id="admin_phone" /></div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="+49..." value="${escHtml(contactData.phone)}" id="admin_phone" /></div>
       <div style="margin-bottom:6px;"><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">E-Mail</div>
-      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="info@..." value="${contactData.email}" id="admin_email" /></div>
-      <div><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WhatsApp (nur Ziffern, ohne +)</div>
-      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="+49... oder 49..." value="${contactData.whatsapp}" id="admin_whatsapp" /></div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="info@..." value="${escHtml(contactData.email)}" id="admin_email" /></div>
+      <div><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WhatsApp</div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="+49... oder 49..." value="${escHtml(contactData.whatsapp)}" id="admin_whatsapp" /></div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;line-height:1.3;">Hinweis: WhatsApp wird automatisch auf Ziffern bereinigt.</div>
     </div>`;
   }
 
@@ -919,27 +934,56 @@
   function enableDnD(containerId, listRef, onDone) {
     const root = document.getElementById(containerId);
     if (!root) return;
-    if (root.dataset.dndBound === '1') return;
-    root.dataset.dndBound = '1';
-    const root = document.getElementById(containerId);
-    if (!root) return;
-    // Make each immediate child draggable
-    [...root.children].forEach((el) => {
-      el.draggable = true;
-      el.style.cursor = 'grab';
-      el.addEventListener('dragstart', (e) => {
-        el.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', el.dataset.key || el.dataset.index || '');
+
+    // Prevent listener duplication
+    if (root.dataset.dndBound === '1') {
+      // Still ensure children are draggable after rerender
+      [...root.children].forEach(el => {
+        el.draggable = true;
+        el.style.cursor = 'grab';
+        el.style.userSelect = 'none';
       });
-      el.addEventListener('dragend', () => el.classList.remove('dragging'));
+      return;
+    }
+    root.dataset.dndBound = '1';
+
+    const getItems = () => [...root.querySelectorAll(':scope > div')];
+
+    const setDraggable = () => {
+      getItems().forEach((el) => {
+        el.draggable = true;
+        el.style.cursor = 'grab';
+        el.style.userSelect = 'none';
+        el.style.outline = 'none';
+
+        el.addEventListener('dragstart', (e) => {
+          el.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', el.dataset.key || el.dataset.index || '');
+        });
+        el.addEventListener('dragend', () => {
+          el.classList.remove('dragging');
+          root.classList.remove('drag-over');
+        });
+      });
+    };
+
+    setDraggable();
+
+    root.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      root.classList.add('drag-over');
+    });
+
+    root.addEventListener('dragleave', (e) => {
+      if (e.target === root) root.classList.remove('drag-over');
     });
 
     root.addEventListener('dragover', (e) => {
       e.preventDefault();
       const dragging = root.querySelector('.dragging');
       if (!dragging) return;
-      const after = [...root.querySelectorAll(':scope > div')]
+      const after = getItems()
         .filter(x => x !== dragging)
         .find(x => {
           const r = x.getBoundingClientRect();
@@ -951,27 +995,30 @@
 
     root.addEventListener('drop', (e) => {
       e.preventDefault();
-      // Rebuild listRef based on new DOM order
-      const children = [...root.querySelectorAll(':scope > div')];
+      root.classList.remove('drag-over');
+
+      const children = getItems();
       if (Array.isArray(listRef)) {
         const newArr = children.map(ch => listRef[Number(ch.dataset.index)]).filter(Boolean);
-        listRef.length = 0; newArr.forEach(x => listRef.push(x));
+        listRef.length = 0;
+        newArr.forEach(x => listRef.push(x));
+        // Re-render to update data-index mapping
+        onDone?.('array');
       } else {
-        // object case: preserve order in a special _order array
         const order = children.map(ch => ch.dataset.key).filter(Boolean);
         listRef._order = order;
+        onDone?.('object');
       }
-      onDone?.();
+
+      // keep draggable after potential rerender
+      setTimeout(setDraggable, 0);
     });
   }
 
   function renderAdminPublic() {
     const c = document.getElementById('adminPublicLinks');
     c.innerHTML = '';
-    // allow re-binding after re-render
-    c.dataset.dndBound = '0';
-    const c = document.getElementById('adminPublicLinks');
-    c.innerHTML = '';
+
     publicLinks.forEach((lnk, i) => {
       c.innerHTML += `<div data-index="${i}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
         <div style="display:flex;gap:6px;margin-bottom:6px;">
@@ -983,7 +1030,8 @@
         <button onclick="removePublic(${i})" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
       </div>`;
     });
-    enableDnD('adminPublicLinks', publicLinks, () => {});
+
+    enableDnD('adminPublicLinks', publicLinks, () => renderAdminPublic());
   }
 
   function lockedKeysInOrder() {
@@ -997,10 +1045,7 @@
   function renderAdminLocked() {
     const c = document.getElementById('adminLockedLinks');
     c.innerHTML = '';
-    // allow re-binding after re-render
-    c.dataset.dndBound = '0';
-    const c = document.getElementById('adminLockedLinks');
-    c.innerHTML = '';
+
     lockedKeysInOrder().forEach(key => {
       const item = lockedItems[key];
       c.innerHTML += `<div data-key="${key}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,170,100,0.1);border-radius:12px;padding:12px;margin-bottom:8px;">
@@ -1012,7 +1057,8 @@
         <button onclick="removeLocked('${key}')" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
       </div>`;
     });
-    enableDnD('adminLockedLinks', lockedItems, () => {});
+
+    enableDnD('adminLockedLinks', lockedItems, () => renderAdminLocked());
   }
 
   function addPublicLink() {
@@ -1133,8 +1179,14 @@
 
     overlay.classList.add('active');
     setTimeout(() => document.getElementById('passwordInput').focus(), 400);
+  }
 
   function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentKey = null;
+  }
+
+  // ── Rate Limit (UI) ─────────────────────────────────────────────────────────function closeModal() {
     document.getElementById('modalOverlay').classList.remove('active');
     currentKey = null;
   }
