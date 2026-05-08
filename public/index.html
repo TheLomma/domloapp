@@ -1,620 +1,1152 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Dominik Lohmar</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Dominik Lohmar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <!-- PWA Meta Tags -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Dominik Lohmar" />
-  <meta name="theme-color" content="#111111" />
-  <meta name="description" content="Dominik Lohmar – Zauberkünstler" />
+body {
+font-family: 'Inter', -apple-system, sans-serif;
+background: #0e0e0e;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+min-height: 100vh;
+overflow-x: hidden;
+}
 
-  <!-- Icons -->
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+.phone-frame {
+width: 100%;
+max-width: 480px;
+min-height: 100vh;
+background: #111111;
+border-radius: 0;
+box-shadow: none;
+overflow: hidden;
+position: relative;
+display: flex;
+flex-direction: column;
+}
 
-  <!-- Web App Manifest -->
-  <link rel="manifest" href="manifest.json" />
+/* Status Bar */
+.status-bar {
+height: 50px;
+background: transparent;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px 28px 0;
+position: relative;
+z-index: 100;
+}
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+.status-time {
+font-size: 15px;
+font-weight: 600;
+color: #fff;
+}
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+.status-icons {
+display: flex;
+gap: 6px;
+align-items: center;
+color: #fff;
+font-size: 12px;
+}
 
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: #0e0e0e;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+.dynamic-island {
+position: absolute;
+top: 12px;
+left: 50%;
+transform: translateX(-50%);
+width: 120px;
+height: 34px;
+background: #000;
+border-radius: 20px;
+z-index: 200;
+}
 
-    .phone-frame {
-      width: 100%;
-      max-width: 480px;
-      min-height: 100vh;
-      background: #111111;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
+/* Scroll Container */
+.scroll-container {
+flex: 1;
+overflow-y: visible;
+overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+scrollbar-width: none;
+}
 
-    .scroll-container {
-      flex: 1;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .scroll-container::-webkit-scrollbar { display: none; }
+.scroll-container::-webkit-scrollbar { display: none; }
 
-    /* Hero */
-    .hero {
-      position: relative;
-      padding: 48px 24px 30px;
-      text-align: center;
-      background: linear-gradient(180deg, #161616 0%, #111111 100%);
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -50%; left: 50%;
-      transform: translateX(-50%);
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(200,170,100,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
+/* Hero Section */
+.hero {
+position: relative;
+padding: 20px 24px 30px;
+text-align: center;
+background: linear-gradient(180deg, #161616 0%, #111111 100%);
+overflow: hidden;
+}
 
-    .magic-stars { position: absolute; top:0;left:0;right:0;bottom:0; pointer-events:none; }
-    .star {
-      position: absolute;
-      width: 2px; height: 2px;
-      background: rgba(200,170,100,0.5);
-      border-radius: 50%;
-      animation: twinkle 2s infinite;
-    }
-    @keyframes twinkle {
-      0%,100% { opacity:0.15; transform:scale(1); }
-      50% { opacity:0.8; transform:scale(1.5); }
-    }
+.hero::before {
+content: '';
+position: absolute;
+top: -50%;
+left: 50%;
+transform: translateX(-50%);
+width: 300px;
+height: 300px;
+background: radial-gradient(circle, rgba(200, 170, 100, 0.08) 0%, transparent 70%);
+pointer-events: none;
+}
 
-    .avatar-ring {
-      width: 100px; height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #c8aa64, #e8d5a0, #c8aa64);
-      padding: 3px;
-      margin: 0 auto 16px;
-      cursor: pointer;
-      user-select: none;
-      animation: rotateBorder 4s linear infinite;
-    }
-    @keyframes rotateBorder {
-      from { filter: brightness(1); }
-      to   { filter: brightness(1.2); }
-    }
-    .avatar-inner {
-      width:100%; height:100%;
-      border-radius:50%;
-      background:#1a1a1a;
-      display:flex; align-items:center; justify-content:center;
-      font-size:42px;
-    }
+.magic-stars {
+position: absolute;
+top: 0; left: 0; right: 0; bottom: 0;
+pointer-events: none;
+}
 
-    .magician-name {
-      font-size: 26px;
-      font-weight: 300;
-      font-family: 'Cormorant Garamond', serif;
-      color: #f0e6cc;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .version-tag {
-      font-size: 10px;
-      color: rgba(200,170,100,0.35);
-      letter-spacing: 2px;
-      margin-bottom: 20px;
-      font-weight: 300;
-    }
+.star {
+position: absolute;
+width: 3px;
+height: 3px;
+background: rgba(200,170,100,0.6);
+border-radius: 50%;
+animation: twinkle 2s infinite;
+}
 
-    /* Contact Chips */
-    .contact-chips {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .chip {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(200,170,100,0.2);
-      border-radius: 20px;
-      padding: 7px 14px;
-      color: rgba(255,255,255,0.8);
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-    .chip:hover, .chip:active {
-      background: rgba(200,170,100,0.08);
-      border-color: rgba(200,170,100,0.5);
-      transform: scale(1.05);
-    }
-    .chip-icon { font-size: 14px; }
+@keyframes twinkle {
+0%, 100% { opacity: 0.2; transform: scale(1); }
+50% { opacity: 1; transform: scale(1.5); }
+}
 
-    /* Section */
-    .section { padding: 0 20px 20px; }
-    .section-label {
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 3px;
-      color: rgba(200,170,100,0.5);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      padding-left: 4px;
-    }
+.avatar-ring { cursor: pointer; } .avatar-ring-wrap {
+width: 100px;
+height: 100px;
+border-radius: 50%;
+background: linear-gradient(135deg, #c8aa64, #e8d5a0, #c8aa64);
+padding: 3px;
+margin: 0 auto 16px;
+position: relative;
+animation: rotateBorder 4s linear infinite;
+}
 
-    /* Link Cards */
-    .link-card {
-      display: flex; align-items: center;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      text-decoration: none;
-      color: #fff;
-      position: relative; overflow: hidden;
-    }
-    .link-card::before {
-      content: '';
-      position: absolute; top:0;left:0;right:0;bottom:0;
-      background: linear-gradient(135deg, rgba(200,170,100,0.06), rgba(200,170,100,0.02));
-      opacity: 0; transition: opacity 0.25s;
-    }
-    .link-card:hover::before, .link-card:active::before { opacity: 1; }
-    .link-card:hover, .link-card:active {
-      border-color: rgba(200,170,100,0.25);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-    .link-icon {
-      width:44px; height:44px;
-      border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px;
-      margin-right:14px;
-      flex-shrink:0;
-    }
-    .link-text { flex:1; }
-    .link-title { font-size:14px; font-weight:400; margin-bottom:2px; letter-spacing:0.3px; }
-    .link-subtitle { font-size:11px; color:rgba(255,255,255,0.35); }
-    .link-arrow { font-size:18px; color:rgba(255,255,255,0.3); margin-left:8px; }
+@keyframes rotateBorder {
+from { filter: brightness(1); }
+to { filter: brightness(1.2); }
+}
 
-    /* Locked Cards */
-    .locked-card {
-      display:flex; align-items:center;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius:16px;
-      padding:14px 16px;
-      margin-bottom:10px;
-      cursor:pointer;
-      transition: all 0.25s ease;
-      position:relative; overflow:hidden;
-    }
-    .locked-card.unlocked { border-color:rgba(200,170,100,0.3); background:rgba(200,170,100,0.04); }
-    .locked-card:hover, .locked-card:active { border-color:rgba(200,170,100,0.25); transform:translateY(-2px); }
-    .lock-icon {
-      width:44px; height:44px; border-radius:12px;
-      background:rgba(255,255,255,0.06);
-      display:flex; align-items:center; justify-content:center;
-      font-size:20px; margin-right:14px; flex-shrink:0;
-    }
-    .lock-text { flex:1; }
-    .lock-title { font-size:14px; font-weight:400; color:rgba(255,255,255,0.45); margin-bottom:2px; letter-spacing:0.3px; }
-    .lock-title.unlocked-text { color:#fff; }
-    .lock-subtitle { font-size:11px; color:rgba(255,255,255,0.25); }
-    .lock-badge { font-size:18px; margin-left:8px; }
+.avatar-inner {
+width: 100%;
+height: 100%;
+border-radius: 50%;
+background: #1a1a1a;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 42px;
+}
 
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      top:0;left:0;right:0;bottom:0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display:flex; align-items:flex-end; justify-content:center;
-      z-index:1000;
-      opacity:0; pointer-events:none;
-      transition: opacity 0.3s;
-    }
-    .modal-overlay.active { opacity:1; pointer-events:all; }
-    .modal-sheet {
-      width:100%; max-width:480px;
-      background:#181818;
-      border-radius:28px 28px 0 0;
-      padding:16px 24px 48px;
-      transform:translateY(100%);
-      transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-      border-top:1px solid rgba(200,170,100,0.12);
-    }
-    .modal-overlay.active .modal-sheet { transform:translateY(0); }
-    .modal-handle { width:40px; height:4px; background:rgba(255,255,255,0.2); border-radius:2px; margin:0 auto 20px; }
-    .modal-title { font-size:18px; font-weight:300; font-family:'Cormorant Garamond',serif; letter-spacing:2px; color:#f0e6cc; margin-bottom:6px; text-align:center; }
-    .modal-subtitle { font-size:13px; color:rgba(255,255,255,0.5); text-align:center; margin-bottom:24px; }
+.magician-name {
+font-size: 26px;
+font-weight: 300;
+font-family: 'Cormorant Garamond', serif;
+color: #f0e6cc;
+letter-spacing: 3px;
+text-transform: uppercase;
+margin-bottom: 6px;
+}
 
-    .password-input {
-      width:100%;
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(200,170,100,0.2);
-      border-radius:14px;
-      padding:14px 18px;
-      font-size:16px; color:#fff;
-      outline:none;
-      letter-spacing:4px; text-align:center;
-      transition:border-color 0.2s;
-      margin-bottom:12px;
-      font-family:inherit;
-    }
-    .password-input::placeholder { letter-spacing:1px; color:rgba(255,255,255,0.3); }
-    .password-input:focus { border-color:rgba(200,170,100,0.5); }
-    .password-input.error { border-color:#ff4757; animation:shake 0.3s ease; }
-    .password-input.admin-input { letter-spacing:0; text-align:left; padding:8px 12px; font-size:13px; margin-bottom:0; }
+.magician-name {
+margin-bottom: 0;
+}
 
-    @keyframes shake {
-      0%,100% { transform:translateX(0); }
-      25% { transform:translateX(-8px); }
-      75% { transform:translateX(8px); }
-    }
+.magician-tagline {
+font-size: 11px;
+color: rgba(200, 170, 100, 0.6);
+letter-spacing: 4px;
+text-transform: uppercase;
+margin-bottom: 20px;
+font-weight: 300;
+}
 
-    .error-msg { font-size:12px; color:#ff4757; text-align:center; margin-bottom:12px; min-height:16px; }
-    .btn-unlock {
-      width:100%;
-      background:linear-gradient(135deg,#c8aa64,#a08840);
-      border:none; border-radius:14px;
-      padding:15px; font-size:15px; font-weight:500;
-      color:#111; cursor:pointer; transition:all 0.2s;
-      font-family:inherit; letter-spacing:0.5px;
-    }
-    .btn-unlock:hover,.btn-unlock:active { transform:scale(0.98); opacity:0.9; }
-    .btn-cancel {
-      width:100%; background:transparent; border:none;
-      padding:14px; font-size:14px;
-      color:rgba(255,255,255,0.4);
-      cursor:pointer; font-family:inherit; margin-top:4px;
-    }
+/* Contact Chips */
+.contact-chips {
+display: flex;
+justify-content: center;
+gap: 10px;
+flex-wrap: wrap;
+margin-bottom: 8px;
+margin-top: 32px;
+}
 
-    .success-flash {
-      position:fixed; top:0;left:0;right:0;bottom:0;
-      background:radial-gradient(circle, rgba(200,170,100,0.1), transparent 70%);
-      pointer-events:none; opacity:0; z-index:5000;
-    }
-    .success-flash.animate { animation:flash 0.6s ease forwards; }
-    @keyframes flash { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0} }
+.chip {
+display: flex;
+align-items: center;
+gap: 6px;
+background: rgba(255, 255, 255, 0.04);
+border: 1px solid rgba(200, 170, 100, 0.2);
+border-radius: 20px;
+padding: 7px 14px;
+color: rgba(255,255,255,0.8);
+font-size: 12px;
+cursor: pointer;
+transition: all 0.2s;
+text-decoration: none;
+}
 
-    .footer { padding:10px 20px 36px; text-align:center; }
-    .footer-text { font-size:11px; color:rgba(255,255,255,0.18); }
+.chip:hover, .chip:active {
+background: rgba(200, 170, 100, 0.08);
+border-color: rgba(200, 170, 100, 0.5);
+transform: scale(1.05);
+}
 
-    .divider { height:1px; background:rgba(255,255,255,0.06); margin:4px 20px 20px; }
+.chip-icon { font-size: 14px; }
 
-    .unlocked-link-btn {
-      display:flex; align-items:center; justify-content:center; gap:8px;
-      width:100%;
-      background:rgba(200,170,100,0.08);
-      border:1px solid rgba(200,170,100,0.3);
-      border-radius:14px; padding:15px;
-      font-size:14px; font-weight:400; color:#c8aa64;
-      cursor:pointer; transition:all 0.2s;
-      font-family:inherit; margin-bottom:8px; text-decoration:none;
-    }
-    .unlocked-link-btn:hover { opacity:0.85; }
+/* Section */
+.section {
+padding: 0 20px 20px;
+}
 
-    /* Admin styles */
-    .admin-field-group {
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.07);
-      border-radius:12px; padding:12px; margin-bottom:8px;
-    }
-    .admin-field-group.gold { border-color:rgba(200,170,100,0.12); }
-    .admin-row { display:flex; gap:6px; margin-bottom:6px; }
-    .admin-label { font-size:10px; color:rgba(200,170,100,0.4); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
-    .admin-scroll { max-height:85vh; overflow-y:auto; padding-bottom:50px; }
-    .remove-btn { background:none; border:none; color:rgba(255,80,80,0.5); font-size:11px; cursor:pointer; margin-top:6px; }
-    .remove-btn:hover { color:rgba(255,80,80,0.9); }
-  </style>
+.section-label {
+font-size: 10px;
+font-weight: 400;
+letter-spacing: 3px;
+color: rgba(200, 170, 100, 0.5);
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-bottom: 12px;
+padding-left: 4px;
+}
+
+/* Link Cards */
+.link-card {
+display: flex;
+align-items: center;
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.07);
+border-radius: 14px;
+padding: 14px 16px;
+margin-bottom: 8px;
+cursor: pointer;
+transition: all 0.25s ease;
+text-decoration: none;
+color: #fff;
+position: relative;
+overflow: hidden;
+}
+
+.link-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0; bottom: 0;
+background: linear-gradient(135deg, rgba(200,170,100,0.06), rgba(200,170,100,0.02));
+opacity: 0;
+transition: opacity 0.25s;
+}
+
+.link-card:hover::before, .link-card:active::before { opacity: 1; }
+
+.link-card:hover, .link-card:active {
+border-color: rgba(200, 170, 100, 0.25);
+transform: translateY(-1px);
+box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.link-icon {
+width: 44px;
+height: 44px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 22px;
+margin-right: 14px;
+flex-shrink: 0;
+}
+
+.link-text { flex: 1; }
+.link-title { font-size: 14px; font-weight: 400; margin-bottom: 2px; letter-spacing: 0.3px; }
+.link-subtitle { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+.link-arrow {
+font-size: 18px;
+color: rgba(255,255,255,0.3);
+margin-left: 8px;
+}
+
+/* Locked Cards */
+.locked-card {
+display: flex;
+align-items: center;
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.06);
+border-radius: 16px;
+padding: 14px 16px;
+margin-bottom: 10px;
+cursor: pointer;
+transition: all 0.25s ease;
+position: relative;
+overflow: hidden;
+}
+
+.locked-card.unlocked {
+border-color: rgba(200, 170, 100, 0.3);
+background: rgba(200, 170, 100, 0.04);
+}
+
+.locked-card:hover, .locked-card:active {
+border-color: rgba(200, 170, 100, 0.25);
+transform: translateY(-2px);
+}
+
+.lock-icon {
+width: 44px;
+height: 44px;
+border-radius: 12px;
+background: rgba(255,255,255,0.06);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 20px;
+margin-right: 14px;
+flex-shrink: 0;
+}
+
+.lock-text { flex: 1; }
+.lock-title { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.45); margin-bottom: 2px; letter-spacing: 0.3px; }
+.lock-title.unlocked-text { color: #fff; }
+.lock-subtitle { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+.lock-badge {
+font-size: 18px;
+margin-left: 8px;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0, 0, 0, 0.85);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+display: flex;
+align-items: flex-end;
+justify-content: center;
+z-index: 1000;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s;
+}
+
+.modal-overlay.active {
+opacity: 1;
+pointer-events: all;
+}
+
+.modal-sheet {
+width: 100%;
+background: #181818;
+border-radius: 28px 28px 0 0;
+padding: 16px 24px 40px;
+transform: translateY(100%);
+transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+border-top: 1px solid rgba(200,170,100,0.12);
+}
+
+.modal-overlay.active .modal-sheet {
+transform: translateY(0);
+}
+
+.modal-handle {
+width: 40px;
+height: 4px;
+background: rgba(255,255,255,0.2);
+border-radius: 2px;
+margin: 0 auto 20px;
+}
+
+.modal-title {
+font-size: 18px;
+font-weight: 300;
+font-family: 'Cormorant Garamond', serif;
+letter-spacing: 2px;
+color: #f0e6cc;
+margin-bottom: 6px;
+text-align: center;
+}
+
+.modal-subtitle {
+font-size: 13px;
+color: rgba(255,255,255,0.5);
+text-align: center;
+margin-bottom: 24px;
+}
+
+.password-input {
+width: 100%;
+background: rgba(255,255,255,0.04);
+border: 1px solid rgba(200,170,100,0.2);
+border-radius: 14px;
+padding: 14px 18px;
+font-size: 16px;
+color: #fff;
+outline: none;
+letter-spacing: 4px;
+text-align: center;
+transition: border-color 0.2s;
+margin-bottom: 12px;
+font-family: inherit;
+}
+
+.password-input::placeholder { letter-spacing: 1px; color: rgba(255,255,255,0.3); }
+.password-input:focus { border-color: rgba(200, 170, 100, 0.5); }
+.password-input.error { border-color: #ff4757; animation: shake 0.3s ease; }
+
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25% { transform: translateX(-8px); }
+75% { transform: translateX(8px); }
+}
+
+.error-msg {
+font-size: 12px;
+color: #ff4757;
+text-align: center;
+margin-bottom: 12px;
+min-height: 16px;
+}
+
+.btn-unlock {
+width: 100%;
+background: linear-gradient(135deg, #c8aa64, #a08840);
+border: none;
+border-radius: 14px;
+padding: 15px;
+font-size: 16px;
+font-weight: 600;
+color: #fff;
+cursor: pointer;
+transition: all 0.2s;
+font-family: inherit;
+}
+
+.btn-unlock:hover, .btn-unlock:active {
+transform: scale(0.98);
+opacity: 0.9;
+}
+
+.btn-cancel {
+width: 100%;
+background: transparent;
+border: none;
+padding: 14px;
+font-size: 15px;
+color: rgba(255,255,255,0.5);
+cursor: pointer;
+font-family: inherit;
+margin-top: 4px;
+}
+
+/* Success animation */
+.success-flash {
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: radial-gradient(circle, rgba(200,170,100,0.08), transparent 70%);
+pointer-events: none;
+opacity: 0;
+animation: none;
+}
+
+.success-flash.animate {
+animation: flash 0.6s ease forwards;
+}
+
+@keyframes flash {
+0% { opacity: 0; }
+30% { opacity: 1; }
+100% { opacity: 0; }
+}
+
+/* Footer */
+.footer {
+padding: 10px 20px 30px;
+text-align: center;
+}
+
+.footer-text {
+font-size: 11px;
+color: rgba(255,255,255,0.2);
+}
+
+/* Divider */
+.divider {
+height: 1px;
+background: rgba(255,255,255,0.06);
+margin: 4px 20px 20px;
+}
+
+/* Unlocked link action */
+.unlocked-link-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+width: 100%;
+background: rgba(200,170,100,0.08);
+border: 1px solid rgba(200,170,100,0.3);
+border-radius: 14px;
+padding: 15px;
+font-size: 14px;
+font-weight: 400;
+color: #c8aa64;
+cursor: pointer;
+transition: all 0.2s;
+font-family: inherit;
+margin-bottom: 8px;
+text-decoration: none;
+}
+
+.unlocked-link-btn:hover { opacity: 0.85; }
+</style>
 </head>
 <body>
 
 <div class="phone-frame">
-  <div class="scroll-container">
 
-    <!-- Hero -->
-    <div class="hero">
-      <div class="magic-stars" id="stars"></div>
-      <div class="avatar-ring" id="logoClickArea" onclick="handleLogoClick()">
-        <div class="avatar-inner">🎩</div>
-      </div>
-      <div class="magician-name" onclick="handleLogoClick()">Dominik Lohmar</div>
-      <div class="version-tag">vers. 1.0</div>
-      <div class="contact-chips">
-        <a class="chip" href="tel:+4915112345678"><span class="chip-icon">📞</span><span>Anrufen</span></a>
-        <a class="chip" href="mailto:info@dominik-lohmar.de"><span class="chip-icon">✉️</span><span>E-Mail</span></a>
-        <a class="chip" href="https://wa.me/4915112345678" target="_blank"><span class="chip-icon">💬</span><span>WhatsApp</span></a>
-      </div>
-    </div>
 
-    <!-- Public Links -->
-    <div class="section" style="padding-top:20px;">
-      <div class="section-label">Links & Auftritte</div>
-      <div id="publicLinksContainer"></div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Locked Links -->
-    <div class="section">
-      <div class="section-label">Exklusive Bereiche</div>
-      <div id="lockedCardsContainer"></div>
-    </div>
-
-    <div class="footer">
-      <div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
-    </div>
-
-  </div><!-- end scroll -->
-</div><!-- end phone-frame -->
-
-<!-- Password Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="modalTitle">Bereich freischalten</div>
-    <div class="modal-subtitle" id="modalSubtitle">Bitte gib dein Passwort ein</div>
-    <div id="modalLockView">
-      <input class="password-input" type="password" id="passwordInput" placeholder="Passwort" maxlength="30" autocomplete="off" />
-      <div class="error-msg" id="errorMsg"></div>
-      <button class="btn-unlock" onclick="tryUnlock()">Freischalten</button>
-      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
-    </div>
-    <div id="modalUnlockView" style="display:none;">
-      <a class="unlocked-link-btn" id="unlockedLinkBtn" href="#" target="_blank">Zum Inhalt</a>
-      <button class="btn-cancel" onclick="closeModal()">Schließen</button>
-    </div>
-  </div>
+<!-- Status Bar -->
+<div class="status-bar">
+<div class="status-time" id="clock">9:41</div>
+<div class="status-icons">
+<span>●●●</span>
+<span>WiFi</span>
+<span>🔋</span>
+</div>
 </div>
 
-<!-- Admin Modal -->
+<!-- Scroll Content -->
+<div class="scroll-container">
+
+<!-- Hero -->
+<div class="hero">
+<div class="magic-stars" id="stars"></div>
+<div class="avatar-ring" id="logoClickArea" onclick="handleLogoClick()">
+<div class="avatar-inner">🎩</div>
+</div>
+<div class="magician-name" id="logoClick" onclick="handleLogoClick()">Dominik Lohmar</div>
+<div class="contact-chips">
+  <a class="chip" id="chipPhone" href="tel:+491732982090">
+    <span class="chip-icon">📞</span>
+    <span>Anrufen</span>
+  </a>
+  <a class="chip" id="chipEmail" href="mailto:lohmar.dominik@gmail.com">
+    <span class="chip-icon">✉️</span>
+    <span>E-Mail</span>
+  </a>
+  <a class="chip" id="chipWhatsapp" href="https://wa.me/491732982090" target="_blank" rel="noopener noreferrer">
+    <span class="chip-icon">💬</span>
+    <span>WhatsApp</span>
+  </a>
+</div>
+</div>
+
+<!-- Public Links -->
+<div class="section" style="padding-top: 20px;">
+  <div class="section-label">Links & Auftritte</div>
+  <div id="publicLinksContainer"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Locked Links -->
+<div class="section">
+<div class="section-label">Exklusive Bereiche</div>
+<div id="lockedCardsContainer"></div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+<div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
+<div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.6</div>
+</div>
+
+</div><!-- end scroll -->
+
+<!-- PIN Modal -->
+<div class="modal-overlay" id="pinOverlay">
+<div class="modal-sheet">
+<div class="modal-handle"></div>
+<div class="modal-title" style="margin-bottom:4px;">Zugang</div>
+<div class="modal-subtitle" style="margin-bottom:20px;">Bitte PIN eingeben</div>
+<input class="password-input" type="password" id="pinInput" placeholder="····" maxlength="10" autocomplete="off" inputmode="numeric" />
+<div class="error-msg" id="pinErrorMsg"></div>
+<button class="btn-unlock" onclick="checkPin()">Bestätigen</button>
+<button class="btn-cancel" onclick="closePin()">Abbrechen</button>
+</div>
+</div>
+
+<!-- Admin Panel -->
 <div class="modal-overlay" id="adminOverlay">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" style="margin-bottom:4px;">Admin-Bereich</div>
-    <div class="modal-subtitle" style="margin-bottom:16px;">Links & Passwörter verwalten</div>
-    <div class="admin-scroll">
-      <div style="margin-bottom:18px;">
-        <div class="section-label" style="margin-bottom:8px;">Öffentliche Links</div>
-        <div id="adminPublicLinks"></div>
-        <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;color:rgba(200,170,100,0.6);margin-top:2px;" onclick="addPublicLink()">+ Link hinzufügen</button>
-      </div>
-      <div style="margin-bottom:18px;">
-        <div class="section-label" style="margin-bottom:8px;">Exklusive Bereiche</div>
-        <div id="adminLockedLinks"></div>
-        <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;color:rgba(200,170,100,0.6);margin-top:2px;" onclick="addLockedLink()">+ Bereich hinzufügen</button>
-      </div>
-      <button class="btn-unlock" onclick="saveAdmin()">Speichern</button>
-      <button class="btn-cancel" onclick="closeAdmin()">Schließen</button>
-    </div>
-  </div>
+<div class="modal-sheet" style="max-height:85vh;overflow-y:auto;padding-bottom:50px;">
+<div class="modal-handle"></div>
+<div class="modal-title" style="margin-bottom:4px;">Admin-Bereich</div>
+<div class="modal-subtitle" style="margin-bottom:20px;">Links & Passwörter verwalten</div>
+
+<div style="margin-bottom:18px;">
+<div class="section-label" style="margin-bottom:10px;">Kontakt</div>
+<div id="adminContactFields"></div>
+</div>
+
+<div style="margin-bottom:18px;">
+<div class="section-label" style="margin-bottom:10px;">Öffentliche Links</div>
+<div id="adminPublicLinks"></div>
+<button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;width:100%;margin-top:4px;color:rgba(200,170,100,0.7);" onclick="addPublicLink()">+ Link hinzufügen</button>
+</div>
+
+<div style="margin-bottom:18px;">
+<div class="section-label" style="margin-bottom:10px;">Exklusive Bereiche</div>
+<div id="adminLockedLinks"></div>
+<button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;width:100%;margin-top:4px;color:rgba(200,170,100,0.7);" onclick="addLockedLink()">+ Bereich hinzufügen</button>
+</div>
+
+<button class="btn-unlock" onclick="saveAdmin()">Speichern</button>
+<button class="btn-cancel" onclick="closeAdmin()">Schließen</button>
+</div>
 </div>
 
 <!-- Success Flash -->
 <div class="success-flash" id="successFlash"></div>
 
-<script>
-  // ── Data ─────────────────────────────────────────────────────────────────────
-  let publicLinks = JSON.parse(localStorage.getItem('dl_public') || 'null') || [
-    { icon:'📸', title:'Instagram', subtitle:'@dominik.lohmar', url:'https://www.instagram.com' },
-    { icon:'▶️', title:'YouTube', subtitle:'Zaubershows & Behind the Scenes', url:'https://www.youtube.com' },
-    { icon:'🎵', title:'TikTok', subtitle:'Kurzvideos & Tricks', url:'https://www.tiktok.com' },
-    { icon:'🌐', title:'Website', subtitle:'www.dominik-lohmar.de', url:'#' }
-  ];
+</div><!-- end phone-frame -->
 
-  let lockedItems = JSON.parse(localStorage.getItem('dl_locked') || 'null') || {
-    vip:   { password:'vip2026',  title:'VIP-Backstage Zugang',         subtitle:'Exklusive Fotos & Videos für VIP-Gäste', url:'https://www.example.com/vip',   linkLabel:'Backstage-Galerie öffnen' },
-    promo: { password:'magic50',  title:'Aktions-Angebot',              subtitle:'Sonderpreis für Veranstalter',           url:'https://www.example.com/promo', linkLabel:'Angebot anzeigen' },
-    pro:   { password:'press24',  title:'Pressematerial',               subtitle:'Hochauflösende Bilder & Pressetext',     url:'https://www.example.com/press', linkLabel:'Pressemappe herunterladen' }
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal-sheet">
+<div class="modal-handle"></div>
+<div class="modal-title" id="modalTitle">Bereich freischalten</div>
+<div class="modal-subtitle" id="modalSubtitle">Bitte gib dein Passwort ein</div>
+
+<div id="modalLockView">
+<input
+class="password-input"
+type="password"
+id="passwordInput"
+placeholder="Passwort"
+maxlength="20"
+autocomplete="off"
+/>
+<div class="error-msg" id="errorMsg"></div>
+<button class="btn-unlock" onclick="tryUnlock()">🔓 Freischalten</button>
+<button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+</div>
+
+<div id="modalUnlockView" style="display:none;">
+<a class="unlocked-link-btn" id="unlockedLinkBtn" href="#" target="_blank">
+✨ Zum Inhalt
+</a>
+<button class="btn-cancel" onclick="closeModal()">Schließen</button>
+</div>
+</div>
+</div>
+
+<script>
+  // ── Config / Storage Keys ────────────────────────────────────────────────
+  const LS_PUBLIC   = 'dl_public';
+  const LS_LOCKED   = 'dl_locked';
+  const LS_CONTACT  = 'dl_contact';
+  const LS_UNLOCKED = 'dl_unlocked';
+  const LS_ADMINPIN = 'dl_admin_pin';
+
+  // ── Defaults ──────────────────────────────────────────────────────────────
+  const DEFAULT_LOCKED = {
+    wp2024: {
+      password: 'kreuzvier',
+      title: 'Zaubersalon Wuppertal 2024',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/npvRTRGSa-Q',
+      linkLabel: '▶️ Video ansehen'
+    },
+    wp2025: {
+      password: 'herzzwei',
+      title: 'Zaubersalon Wuppertal 2025',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/DrIhbwldD4g',
+      linkLabel: '▶️ Video ansehen'
+    },
+    wp2026: {
+      password: 'karosieben',
+      title: 'Zaubersalon Wuppertal 2026',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/b_r7gmVKhx0',
+      linkLabel: '▶️ Video ansehen'
+    },
+    koeln2026: {
+      password: 'kreuzdrei',
+      title: 'Auftritt Köln – fiffiBAR 2026',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/C3g-ET9GLps',
+      linkLabel: '▶️ Video ansehen'
+    }
   };
 
-  const unlocked = {};
-  let currentKey = null;
+  const DEFAULT_PUBLIC = [
+    { icon:'📸', title:'Instagram', subtitle:'@datlomma', url:'https://www.instagram.com/datlomma' },
+    { icon:'🌐', title:'Website', subtitle:'– bald neu –', url:'#' }
+  ];
 
-  // ── Render Public ─────────────────────────────────────────────────────────────
+  const DEFAULT_CONTACT = {
+    phone: '+491732982090',
+    email: 'lohmar.dominik@gmail.com',
+    whatsapp: '491732982090'
+  };
+
+  // ── Safe JSON helpers (prevents blank screen if LS is corrupted) ──────────
+  function loadJson(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      return JSON.parse(raw);
+    } catch (e) {
+      console.warn('LocalStorage JSON corrupted for', key, e);
+      return fallback;
+    }
+  }
+  function saveJson(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let lockedItems  = loadJson(LS_LOCKED, DEFAULT_LOCKED);
+  let publicLinks  = loadJson(LS_PUBLIC, DEFAULT_PUBLIC);
+  let contactData  = loadJson(LS_CONTACT, DEFAULT_CONTACT);
+  const unlocked   = loadJson(LS_UNLOCKED, {});
+  let currentKey   = null;
+
+  // ── Clock ────────────────────────────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2,'0');
+    const m = now.getMinutes().toString().padStart(2,'0');
+    const el = document.getElementById('clock');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // ── Public Links Rendering ────────────────────────────────────────────────
+  function ensurePublicContainerExists() {
+    // Your HTML currently contains static cards. We convert it to a dynamic container
+    // without requiring you to manually edit HTML each time.
+    const section = document.querySelector('.section[style*="padding-top"]');
+    if (!section) return;
+
+    let container = document.getElementById('publicLinksContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'publicLinksContainer';
+
+      // Remove existing hardcoded link cards inside this section (keep label)
+      section.querySelectorAll('.link-card').forEach(el => el.remove());
+
+      section.appendChild(container);
+    }
+  }
+
   function renderPublicLinks() {
-    const c = document.getElementById('publicLinksContainer');
-    c.innerHTML = '';
-    publicLinks.forEach(lnk => {
+    const container = document.getElementById('publicLinksContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    (publicLinks || []).forEach((lnk) => {
+      const icon = lnk?.icon || '🔗';
+      const title = lnk?.title || 'Link';
+      const subtitle = lnk?.subtitle || '';
+      const url = String(lnk?.url || '').trim();
+
+      if (!url || url === '#') {
+        const div = document.createElement('div');
+        div.className = 'link-card';
+        div.style.cursor = 'default';
+        div.style.opacity = '0.6';
+        div.innerHTML = `
+          <div class="link-icon" style="background:rgba(255,255,255,0.06);">${icon}</div>
+          <div class="link-text">
+            <div class="link-title">${escapeHtml(title)}</div>
+            <div class="link-subtitle">${escapeHtml(subtitle)}</div>
+          </div>
+          <div class="link-arrow" style="font-size:12px;color:rgba(255,255,255,0.2);">✦</div>
+        `;
+        container.appendChild(div);
+        return;
+      }
+
+      const isMail = /^mailto:/i.test(url);
       const a = document.createElement('a');
       a.className = 'link-card';
-      a.href = lnk.url;
-      a.target = '_blank';
-      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06)">${lnk.icon}</div><div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle}</div></div><div class="link-arrow">›</div>`;
-      c.appendChild(a);
+      a.href = url;
+      if (!isMail) {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      }
+      a.innerHTML = `
+        <div class="link-icon" style="background:rgba(255,255,255,0.06);">${icon}</div>
+        <div class="link-text">
+          <div class="link-title">${escapeHtml(title)}</div>
+          <div class="link-subtitle">${escapeHtml(subtitle)}</div>
+        </div>
+        <div class="link-arrow">›</div>
+      `;
+      container.appendChild(a);
     });
   }
 
-  // ── Render Locked ─────────────────────────────────────────────────────────────
+  // ── Locked Cards Rendering ────────────────────────────────────────────────
   function renderLockedCards() {
-    const c = document.getElementById('lockedCardsContainer');
-    c.innerHTML = '';
-    Object.keys(lockedItems).forEach(key => {
+    const container = document.getElementById('lockedCardsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    Object.keys(lockedItems || {}).forEach((key) => {
       const item = lockedItems[key];
+      if (!item) return;
+
       const div = document.createElement('div');
       div.className = 'locked-card' + (unlocked[key] ? ' unlocked' : '');
       div.id = 'card-' + key;
       div.onclick = () => openModal(key);
-      div.innerHTML = `<div class="lock-icon" id="icon-${key}">🔐</div><div class="lock-text"><div class="lock-title${unlocked[key]?' unlocked-text':''}" id="title-${key}">${item.title}</div><div class="lock-subtitle" id="sub-${key}">${item.subtitle}</div></div><div class="lock-badge" id="badge-${key}">${unlocked[key]?'✅':'🔒'}</div>`;
-      c.appendChild(div);
+      div.innerHTML = `
+        <div class="lock-icon" id="icon-${key}">🔐</div>
+        <div class="lock-text">
+          <div class="lock-title${unlocked[key] ? ' unlocked-text' : ''}" id="title-${key}">${escapeHtml(item.title || '')}</div>
+          <div class="lock-subtitle" id="sub-${key}">${escapeHtml(item.subtitle || '')}</div>
+        </div>
+        <div class="lock-badge" id="badge-${key}">${unlocked[key] ? '✅' : '🔒'}</div>
+      `;
+      container.appendChild(div);
     });
   }
 
-  renderPublicLinks();
-  renderLockedCards();
+  // ── Contact Data ──────────────────────────────────────────────────────────
+  function applyContactData() {
+    const phone = String(contactData?.phone || '').trim();
+    const email = String(contactData?.email || '').trim();
+    const waDigits = String(contactData?.whatsapp || '').replace(/[^0-9]/g, '');
 
-  // ── Stars ─────────────────────────────────────────────────────────────────────
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 18; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.left = Math.random() * 100 + '%';
-    s.style.top  = Math.random() * 100 + '%';
-    s.style.animationDelay    = Math.random() * 3 + 's';
-    s.style.animationDuration = (2 + Math.random() * 2) + 's';
-    starsEl.appendChild(s);
+    const chipPhone = document.getElementById('chipPhone');
+    const chipEmail = document.getElementById('chipEmail');
+    const chipWhatsapp = document.getElementById('chipWhatsapp');
+
+    if (chipPhone) chipPhone.href = phone ? ('tel:' + phone) : '#';
+    if (chipEmail) chipEmail.href = email ? ('mailto:' + email) : '#';
+    if (chipWhatsapp) chipWhatsapp.href = waDigits ? ('https://wa.me/' + waDigits) : '#';
   }
 
-  // ── Secret Logo Click ─────────────────────────────────────────────────────────
-  let logoClickCount = 0, logoClickTimer = null;
+  // ── Admin (secret) ─────────────────────────────────────────────────────────
+  let logoClickCount = 0;
+  let logoClickTimer = null;
   function handleLogoClick() {
     logoClickCount++;
     clearTimeout(logoClickTimer);
     logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 2000);
-    if (logoClickCount >= 5) { logoClickCount = 0; openAdmin(); }
-  }
-
-  // ── Password Modal ────────────────────────────────────────────────────────────
-  function openModal(key) {
-    currentKey = key;
-    const item = lockedItems[key];
-    document.getElementById('modalTitle').textContent = item.title;
-    document.getElementById('errorMsg').textContent = '';
-    document.getElementById('passwordInput').value = '';
-    document.getElementById('passwordInput').classList.remove('error');
-    if (unlocked[key]) {
-      document.getElementById('modalSubtitle').textContent = '✅ Bereits freigeschaltet!';
-      document.getElementById('modalLockView').style.display = 'none';
-      document.getElementById('modalUnlockView').style.display = 'block';
-      const btn = document.getElementById('unlockedLinkBtn');
-      btn.href = item.url; btn.textContent = item.linkLabel;
-    } else {
-      document.getElementById('modalSubtitle').textContent = 'Bitte gib dein Passwort ein';
-      document.getElementById('modalLockView').style.display = 'block';
-      document.getElementById('modalUnlockView').style.display = 'none';
-    }
-    document.getElementById('modalOverlay').classList.add('active');
-    setTimeout(() => document.getElementById('passwordInput').focus(), 400);
-  }
-  function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('active');
-    currentKey = null;
-  }
-  function tryUnlock() {
-    const input = document.getElementById('passwordInput');
-    const item  = lockedItems[currentKey];
-    if (input.value === item.password) {
-      unlocked[currentKey] = true;
-      document.getElementById('errorMsg').textContent = '';
-      document.getElementById('card-' + currentKey).classList.add('unlocked');
-      document.getElementById('badge-' + currentKey).textContent = '✅';
-      document.getElementById('title-' + currentKey).classList.add('unlocked-text');
-      const flash = document.getElementById('successFlash');
-      flash.classList.remove('animate'); void flash.offsetWidth; flash.classList.add('animate');
-      document.getElementById('modalLockView').style.display = 'none';
-      document.getElementById('modalUnlockView').style.display = 'block';
-      document.getElementById('modalSubtitle').textContent = '✅ Erfolgreich freigeschaltet!';
-      const btn = document.getElementById('unlockedLinkBtn');
-      btn.href = item.url; btn.textContent = item.linkLabel;
-    } else {
-      input.classList.add('error');
-      document.getElementById('errorMsg').textContent = 'Falsches Passwort. Bitte versuche es erneut.';
-      setTimeout(() => input.classList.remove('error'), 400);
-      input.value = '';
+    if (logoClickCount >= 5) {
+      logoClickCount = 0;
+      handleLogoClickWithPin();
     }
   }
-  document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key==='Enter') tryUnlock(); });
-  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target===document.getElementById('modalOverlay')) closeModal(); });
+  window.handleLogoClick = handleLogoClick;
 
-  // ── Admin Panel ───────────────────────────────────────────────────────────────
-  function openAdmin() {
-    renderAdminPublic(); renderAdminLocked();
-    document.getElementById('adminOverlay').classList.add('active');
+  const ADMIN_PIN_DEFAULT = '0815';
+  function getAdminPin() {
+    return localStorage.getItem(LS_ADMINPIN) || ADMIN_PIN_DEFAULT;
   }
-  function closeAdmin() { document.getElementById('adminOverlay').classList.remove('active'); }
 
-  function inp(id,val,placeholder,extra='') {
-    return `<input class="password-input admin-input" id="${id}" value="${val.replace(/"/g,'&quot;')}" placeholder="${placeholder}" ${extra} />`;
+  function handleLogoClickWithPin() {
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinErrorMsg').textContent = '';
+    document.getElementById('pinOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('pinInput').focus(), 250);
+  }
+
+  function checkPin() {
+    const val = document.getElementById('pinInput').value;
+    if (val === getAdminPin()) {
+      closePin();
+      openAdmin();
+    } else {
+      const inp = document.getElementById('pinInput');
+      inp.classList.add('error');
+      document.getElementById('pinErrorMsg').textContent = 'Falsche PIN.';
+      setTimeout(() => inp.classList.remove('error'), 400);
+      inp.value = '';
+    }
+  }
+  window.checkPin = checkPin;
+
+  function closePin() {
+    document.getElementById('pinOverlay').classList.remove('active');
+  }
+  window.closePin = closePin;
+
+  document.getElementById('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPin(); });
+  document.getElementById('pinOverlay').addEventListener('click', e => { if (e.target === document.getElementById('pinOverlay')) closePin(); });
+
+  function renderAdminContact() {
+    const c = document.getElementById('adminContactFields');
+    if (!c) return;
+    c.innerHTML = `
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Telefon</div>
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" value="${escapeHtml(contactData.phone)}" id="admin_phone" />
+        </div>
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">E-Mail</div>
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" value="${escapeHtml(contactData.email)}" id="admin_email" />
+        </div>
+        <div>
+          <div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WhatsApp</div>
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" value="${escapeHtml(contactData.whatsapp)}" id="admin_whatsapp" />
+        </div>
+      </div>
+    `;
   }
 
   function renderAdminPublic() {
     const c = document.getElementById('adminPublicLinks');
+    if (!c) return;
     c.innerHTML = '';
-    publicLinks.forEach((lnk, i) => {
-      c.innerHTML += `<div class="admin-field-group">
-        <div class="admin-row">
-          <input class="password-input admin-input" id="pub_icon_${i}" value="${lnk.icon}" placeholder="Icon" style="width:54px;text-align:center;font-size:20px;" />
-          <input class="password-input admin-input" id="pub_title_${i}" value="${lnk.title.replace(/"/g,'&quot;')}" placeholder="Titel" style="flex:1;" />
+
+    (publicLinks || []).forEach((lnk, i) => {
+      c.innerHTML += `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input class="password-input" style="width:60px;padding:8px;letter-spacing:0;text-align:center;font-size:18px;" value="${escapeHtml(lnk.icon)}" id="pub_icon_${i}" />
+            <input class="password-input" style="flex:1;padding:8px;letter-spacing:0;text-align:left;" value="${escapeHtml(lnk.title)}" id="pub_title_${i}" />
+          </div>
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" value="${escapeHtml(lnk.subtitle)}" id="pub_sub_${i}" />
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" value="${escapeHtml(lnk.url)}" id="pub_url_${i}" />
+          <button onclick="removePublic(${i})" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
         </div>
-        <div style="margin-bottom:6px;">${inp('pub_sub_'+i, lnk.subtitle, 'Untertitel', 'style="width:100%"')}</div>
-        <div>${inp('pub_url_'+i, lnk.url, 'URL', 'style="width:100%"')}</div>
-        <button class="remove-btn" onclick="removePublic(${i})">✕ Entfernen</button>
-      </div>`;
+      `;
     });
   }
 
   function renderAdminLocked() {
     const c = document.getElementById('adminLockedLinks');
+    if (!c) return;
     c.innerHTML = '';
-    Object.keys(lockedItems).forEach(key => {
+
+    Object.keys(lockedItems || {}).forEach((key) => {
       const item = lockedItems[key];
-      c.innerHTML += `<div class="admin-field-group gold">
-        <div style="margin-bottom:6px;">${inp('lck_title_'+key, item.title, 'Titel', 'style="width:100%"')}</div>
-        <div style="margin-bottom:6px;">${inp('lck_sub_'+key, item.subtitle, 'Untertitel', 'style="width:100%"')}</div>
-        <div style="margin-bottom:6px;">${inp('lck_url_'+key, item.url, 'URL', 'style="width:100%"')}</div>
-        <div style="margin-bottom:6px;">${inp('lck_label_'+key, item.linkLabel, 'Link-Label', 'style="width:100%"')}</div>
-        <div><label class="admin-label">Passwort</label>${inp('lck_pw_'+key, item.password, 'Passwort', 'style="width:100%;letter-spacing:2px;"')}</div>
-        <button class="remove-btn" onclick="removeLocked('${key}')">✕ Entfernen</button>
-      </div>`;
+      if (!item) return;
+      c.innerHTML += `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,170,100,0.1);border-radius:12px;padding:12px;margin-bottom:8px;">
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" value="${escapeHtml(item.title)}" id="lck_title_${key}" />
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" value="${escapeHtml(item.subtitle)}" id="lck_sub_${key}" />
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" value="${escapeHtml(item.url)}" id="lck_url_${key}" />
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" value="${escapeHtml(item.linkLabel)}" id="lck_label_${key}" />
+          <input class="password-input" style="width:100%;padding:8px;letter-spacing:2px;text-align:left;" value="${escapeHtml(item.password)}" id="lck_pw_${key}" />
+          <button onclick="removeLocked('${key}')" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
+        </div>
+      `;
     });
   }
 
-  function addPublicLink()  { publicLinks.push({icon:'🔗',title:'Neuer Link',subtitle:'',url:'#'}); renderAdminPublic(); }
-  function removePublic(i)  { publicLinks.splice(i,1); renderAdminPublic(); }
-  function addLockedLink()  { const k='lock_'+Date.now(); lockedItems[k]={password:'passwort',title:'Neuer Bereich',subtitle:'',url:'#',linkLabel:'Öffnen'}; renderAdminLocked(); }
-  function removeLocked(k)  { delete lockedItems[k]; renderAdminLocked(); }
+  function openAdmin() {
+    renderAdminContact();
+    renderAdminPublic();
+    renderAdminLocked();
+    document.getElementById('adminOverlay').classList.add('active');
+  }
+
+  function closeAdmin() {
+    document.getElementById('adminOverlay').classList.remove('active');
+  }
+  window.closeAdmin = closeAdmin;
+
+  window.addPublicLink = function addPublicLink() {
+    publicLinks.push({ icon: '🔗', title: 'Neuer Link', subtitle: '', url: '#' });
+    renderAdminPublic();
+  };
+
+  window.removePublic = function removePublic(i) {
+    publicLinks.splice(i, 1);
+    renderAdminPublic();
+  };
+
+  window.addLockedLink = function addLockedLink() {
+    const key = 'lock_' + Date.now();
+    lockedItems[key] = { password: 'passwort', title: 'Neuer Bereich', subtitle: '', url: '#', linkLabel: '🔓 Öffnen' };
+    renderAdminLocked();
+    renderLockedCards();
+  };
+
+  window.removeLocked = function removeLocked(key) {
+    delete lockedItems[key];
+    renderAdminLocked();
+    renderLockedCards();
+  };
 
   function saveAdmin() {
-    publicLinks.forEach((lnk,i) => {
-      lnk.icon     = document.getElementById('pub_icon_'+i).value;
-      lnk.title    = document.getElementById('pub_title_'+i).value;
-      lnk.subtitle = document.getElementById('pub_sub_'+i).value;
-      lnk.url      = document.getElementById('pub_url_'+i).value;
+    // Public
+    (publicLinks || []).forEach((lnk, i) => {
+      lnk.icon = document.getElementById('pub_icon_' + i).value;
+      lnk.title = document.getElementById('pub_title_' + i).value;
+      lnk.subtitle = document.getElementById('pub_sub_' + i).value;
+      lnk.url = document.getElementById('pub_url_' + i).value;
     });
-    Object.keys(lockedItems).forEach(key => {
-      lockedItems[key].title     = document.getElementById('lck_title_'+key).value;
-      lockedItems[key].subtitle  = document.getElementById('lck_sub_'+key).value;
-      lockedItems[key].url       = document.getElementById('lck_url_'+key).value;
-      lockedItems[key].linkLabel = document.getElementById('lck_label_'+key).value;
-      lockedItems[key].password  = document.getElementById('lck_pw_'+key).value;
+
+    // Locked
+    Object.keys(lockedItems || {}).forEach((key) => {
+      lockedItems[key].title = document.getElementById('lck_title_' + key).value;
+      lockedItems[key].subtitle = document.getElementById('lck_sub_' + key).value;
+      lockedItems[key].url = document.getElementById('lck_url_' + key).value;
+      lockedItems[key].linkLabel = document.getElementById('lck_label_' + key).value;
+      lockedItems[key].password = document.getElementById('lck_pw_' + key).value;
     });
-    localStorage.setItem('dl_public', JSON.stringify(publicLinks));
-    localStorage.setItem('dl_locked', JSON.stringify(lockedItems));
-    renderPublicLinks(); renderLockedCards();
+
+    // Contact
+    contactData.phone = document.getElementById('admin_phone').value;
+    contactData.email = document.getElementById('admin_email').value;
+    contactData.whatsapp = document.getElementById('admin_whatsapp').value;
+
+    saveJson(LS_PUBLIC, publicLinks);
+    saveJson(LS_LOCKED, lockedItems);
+    saveJson(LS_CONTACT, contactData);
+
+    applyContactData();
+    renderPublicLinks();
+    renderLockedCards();
     closeAdmin();
   }
-  document.getElementById('adminOverlay').addEventListener('click', e => { if(e.target===document.getElementById('adminOverlay')) closeAdmin(); });
+  window.saveAdmin = saveAdmin;
+
+  document.getElementById('adminOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('adminOverlay')) closeAdmin();
+  });
+
+  // ── Stars ────────────────────────────────────────────────────────────────
+  const starsEl = document.getElementById('stars');
+  if (starsEl) {
+    for (let i = 0; i < 20; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.animationDelay = Math.random() * 3 + 's';
+      s.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      starsEl.appendChild(s);
+    }
+  }
+
+  // ── Modal (Exclusive Unlock) ─────────────────────────────────────────────
+  function openModal(key) {
+    currentKey = key;
+    const item = lockedItems[key];
+    if (!item) return;
+
+    const overlay = document.getElementById('modalOverlay');
+    const lockView = document.getElementById('modalLockView');
+    const unlockView = document.getElementById('modalUnlockView');
+
+    document.getElementById('modalTitle').textContent = item.title || 'Bereich';
+    document.getElementById('errorMsg').textContent = '';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').classList.remove('error');
+
+    if (unlocked[key]) {
+      document.getElementById('modalSubtitle').textContent = '✅ Bereits freigeschaltet!';
+      lockView.style.display = 'none';
+      unlockView.style.display = 'block';
+      const btn = document.getElementById('unlockedLinkBtn');
+      btn.href = item.url || '#';
+      btn.textContent = item.linkLabel || '✨ Zum Inhalt';
+    } else {
+      document.getElementById('modalSubtitle').textContent = 'Bitte gib dein Passwort ein';
+      lockView.style.display = 'block';
+      unlockView.style.display = 'none';
+    }
+
+    overlay.classList.add('active');
+    setTimeout(() => document.getElementById('passwordInput').focus(), 250);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentKey = null;
+  }
+
+  function tryUnlock() {
+    const input = document.getElementById('passwordInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const item = lockedItems[currentKey];
+    if (!item) return;
+
+    if (input.value === item.password) {
+      unlocked[currentKey] = true;
+      saveJson(LS_UNLOCKED, unlocked);
+      errorMsg.textContent = '';
+
+      // Update card UI
+      const card = document.getElementById('card-' + currentKey);
+      if (card) card.classList.add('unlocked');
+      const badge = document.getElementById('badge-' + currentKey);
+      if (badge) badge.textContent = '✅';
+      const titleEl = document.getElementById('title-' + currentKey);
+      if (titleEl) titleEl.classList.add('unlocked-text');
+
+      // Success flash
+      const flash = document.getElementById('successFlash');
+      if (flash) {
+        flash.classList.remove('animate');
+        void flash.offsetWidth;
+        flash.classList.add('animate');
+      }
+
+      // Switch to unlock view
+      document.getElementById('modalLockView').style.display = 'none';
+      document.getElementById('modalUnlockView').style.display = 'block';
+      document.getElementById('modalSubtitle').textContent = '✅ Erfolgreich freigeschaltet!';
+      const btn = document.getElementById('unlockedLinkBtn');
+      btn.href = item.url || '#';
+      btn.textContent = item.linkLabel || '✨ Zum Inhalt';
+
+    } else {
+      input.classList.add('error');
+      errorMsg.textContent = '❌ Falsches Passwort. Bitte versuche es erneut.';
+      setTimeout(() => input.classList.remove('error'), 400);
+      input.value = '';
+    }
+  }
+
+  window.tryUnlock = tryUnlock;
+  window.closeModal = closeModal;
+
+  document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') tryUnlock();
+  });
+
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+
+  // ── Utils ────────────────────────────────────────────────────────────────
+  function escapeHtml(s) {
+    return String(s ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  // ── Boot ────────────────────────────────────────────────────────────────
+  ensurePublicContainerExists();
+  applyContactData();
+  renderPublicLinks();
+  renderLockedCards();
 </script>
 </body>
 </html>
