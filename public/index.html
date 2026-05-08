@@ -158,6 +158,10 @@
       margin-bottom: 6px;
     }
 
+    .magician-name {
+      margin-bottom: 0;
+    }
+
     .magician-tagline {
       font-size: 11px;
       color: rgba(200, 170, 100, 0.6);
@@ -174,6 +178,7 @@
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 8px;
+      margin-top: 32px;
     }
 
     .chip {
@@ -532,15 +537,15 @@
       </div>
       <div class="magician-name" id="logoClick" onclick="handleLogoClick()">Dominik Lohmar</div>
       <div class="contact-chips">
-        <a class="chip" href="tel:+4915112345678">
+        <a class="chip" href="tel:+491732982090">
           <span class="chip-icon">📞</span>
           <span>Anrufen</span>
         </a>
-        <a class="chip" href="mailto:info@alexander-mystique.de">
+        <a class="chip" href="mailto:lohmar.dominik@gmail.com">
           <span class="chip-icon">✉️</span>
           <span>E-Mail</span>
         </a>
-        <a class="chip" href="https://wa.me/4915112345678" target="_blank">
+        <a class="chip" href="https://wa.me/491732982090" target="_blank">
           <span class="chip-icon">💬</span>
           <span>WhatsApp</span>
         </a>
@@ -551,41 +556,25 @@
     <div class="section" style="padding-top: 20px;">
       <div class="section-label">Links & Auftritte</div>
 
-      <a class="link-card" href="https://www.instagram.com" target="_blank">
-        <div class="link-icon" style="background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);">📸</div>
+      <a class="link-card" href="https://www.instagram.com/datlomma" target="_blank">
+        <div class="link-icon" style="background:rgba(255,255,255,0.06);">📸</div>
         <div class="link-text">
           <div class="link-title">Instagram</div>
-          <div class="link-subtitle">@alexander.mystique</div>
+          <div class="link-subtitle">@datlomma</div>
         </div>
         <div class="link-arrow">›</div>
       </a>
 
-      <a class="link-card" href="https://www.youtube.com" target="_blank">
-        <div class="link-icon" style="background: rgba(255,255,255,0.06);">▶️</div>
-        <div class="link-text">
-          <div class="link-title">YouTube</div>
-          <div class="link-subtitle">Zaubershows & Behind the Scenes</div>
-        </div>
-        <div class="link-arrow">›</div>
-      </a>
 
-      <a class="link-card" href="https://www.tiktok.com" target="_blank">
-        <div class="link-icon" style="background: rgba(255,255,255,0.06);">🎵</div>
-        <div class="link-text">
-          <div class="link-title">TikTok</div>
-          <div class="link-subtitle">Kurzvideos & Tricks</div>
-        </div>
-        <div class="link-arrow">›</div>
-      </a>
 
-      <a class="link-card" href="#" target="_blank">
-        <div class="link-icon" style="background: rgba(255,255,255,0.06);">🌐</div>
+      <div class="link-card" style="cursor:default;opacity:0.6;">
+        <div class="link-icon" style="background:rgba(255,255,255,0.06);">🌐</div>
         <div class="link-text">
           <div class="link-title">Website</div>
-          <div class="link-subtitle">www.alexander-mystique.de</div>
+          <div class="link-subtitle">– bald neu –</div>
         </div>
-        <div class="link-arrow">›</div>
-      </a>
+        <div class="link-arrow" style="font-size:12px;color:rgba(255,255,255,0.2);">✦</div>
+      </div>
 
     </div>
 
@@ -595,26 +584,7 @@
     <div class="section">
       <div class="section-label">Exklusive Bereiche</div>
 
-      <div class="locked-card" id="card-vip" onclick="openModal('vip')">
-        <div class="lock-icon" id="icon-vip">🎭</div>
-        <div class="lock-text">
-          <div class="lock-title" id="title-vip">VIP-Backstage Zugang</div>
-          <div class="lock-subtitle" id="sub-vip">Exklusive Fotos & Videos für VIP-Gäste</div>
-        </div>
-        <div class="lock-badge" id="badge-vip">🔒</div>
-      </div>
-
-      <div class="locked-card" id="card-promo" onclick="openModal('promo')">
-        <div class="lock-icon" id="icon-promo">💎</div>
-        <div class="lock-text">
-          <div class="lock-title" id="title-promo">Aktions-Angebot</div>
-          <div class="lock-subtitle" id="sub-promo">Sonderpreis für Veranstalter</div>
-        </div>
-        <div class="lock-badge" id="badge-promo">🔒</div>
-      </div>
-
-      <div class="locked-card" id="card-pro" onclick="openModal('pro')">
-        <div class="lock-icon" id="icon-pro">🃏</div>
+      <div id="lockedCardsContainer"></div>
         <div class="lock-text">
           <div class="lock-title" id="title-pro">Professionelles Pressematerial</div>
           <div class="lock-subtitle" id="sub-pro">Hochauflösende Bilder & Pressetext</div>
@@ -627,7 +597,7 @@
     <!-- Footer -->
     <div class="footer">
       <div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
-      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.0</div>
+      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.1</div>
     </div>
 
   </div><!-- end scroll -->
@@ -712,26 +682,33 @@
 <script>
   // ── Config ──────────────────────────────────────────────────────────────────
   const lockedItems = {
-    vip: {
-      password: 'vip2026',
-      title: 'VIP-Backstage Zugang',
-      subtitle: 'Exklusive Fotos & Videos für VIP-Gäste',
-      url: 'https://www.example.com/vip',
-      linkLabel: '🎭 Backstage-Galerie öffnen'
+    wp2024: {
+      password: 'kreuzvier',
+      title: 'Zaubersalon Wuppertal 2024',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/npvRTRGSa-Q',
+      linkLabel: '▶️ Video ansehen'
     },
-    promo: {
-      password: 'magic50',
-      title: 'Aktions-Angebot',
-      subtitle: 'Sonderpreis für Veranstalter',
-      url: 'https://www.example.com/promo',
-      linkLabel: '💎 Angebot anzeigen'
+    wp2025: {
+      password: 'herzzwei',
+      title: 'Zaubersalon Wuppertal 2025',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/DrIhbwldD4g',
+      linkLabel: '▶️ Video ansehen'
     },
-    pro: {
-      password: 'press24',
-      title: 'Pressematerial',
-      subtitle: 'Hochauflösende Bilder & Pressetext',
-      url: 'https://www.example.com/press',
-      linkLabel: '🃏 Pressemappe herunterladen'
+    wp2026: {
+      password: 'karosieben',
+      title: 'Zaubersalon Wuppertal 2026',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/b_r7gmVKhx0',
+      linkLabel: '▶️ Video ansehen'
+    },
+    koeln2026: {
+      password: 'kreuzdrei',
+      title: 'Auftritt Köln – fiffiBAR 2026',
+      subtitle: 'Exklusiver Mitschnitt',
+      url: 'https://youtu.be/C3g-ET9GLps',
+      linkLabel: '▶️ Video ansehen'
     }
   };
 
@@ -781,15 +758,15 @@
 
   // ── Contact Data ─────────────────────────────────────────────────────────────
   let contactData = JSON.parse(localStorage.getItem('dl_contact') || 'null') || {
-    phone: '+4915112345678',
-    email: 'info@dominik-lohmar.de',
-    whatsapp: '4915112345678'
+    phone: '+491732982090',
+    email: 'lohmar.dominik@gmail.com',
+    whatsapp: '491732982090'
   };
 
   function applyContactData() {
     document.getElementById('chipPhone').href = 'tel:' + contactData.phone;
     document.getElementById('chipEmail').href = 'mailto:' + contactData.email;
-    document.getElementById('chipWhatsapp').href = 'https://wa.me/' + contactData.whatsapp;
+    document.getElementById('chipWhatsapp').href = 'https://wa.me/' + contactData.whatsapp.replace(/[^0-9]/g, '');
   }
   applyContactData();
 
