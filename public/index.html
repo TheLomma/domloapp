@@ -583,15 +583,7 @@
     <!-- Locked Links -->
     <div class="section">
       <div class="section-label">Exklusive Bereiche</div>
-
       <div id="lockedCardsContainer"></div>
-        <div class="lock-text">
-          <div class="lock-title" id="title-pro">Professionelles Pressematerial</div>
-          <div class="lock-subtitle" id="sub-pro">Hochauflösende Bilder & Pressetext</div>
-        </div>
-        <div class="lock-badge" id="badge-pro">🔒</div>
-      </div>
-
     </div>
 
     <!-- Footer -->
@@ -741,6 +733,7 @@
 
   function renderLockedCards() {
     const container = document.getElementById('lockedCardsContainer');
+    if (!container) return;
     container.innerHTML = '';
     Object.keys(lockedItems).forEach(key => {
       const item = lockedItems[key];
@@ -748,7 +741,12 @@
       div.className = 'locked-card' + (unlocked[key] ? ' unlocked' : '');
       div.id = 'card-' + key;
       div.onclick = () => openModal(key);
-      div.innerHTML = `<div class="lock-icon" id="icon-${key}">🔐</div><div class="lock-text"><div class="lock-title${unlocked[key]?' unlocked-text':''}" id="title-${key}">${item.title}</div><div class="lock-subtitle" id="sub-${key}">${item.subtitle}</div></div><div class="lock-badge" id="badge-${key}">${unlocked[key]?'✅':'🔒'}</div>`;
+      div.innerHTML = `<div class="lock-icon" id="icon-${key}">🔐</div>
+        <div class="lock-text">
+          <div class="lock-title${unlocked[key] ? ' unlocked-text' : ''}" id="title-${key}">${item.title}</div>
+          <div class="lock-subtitle" id="sub-${key}">${item.subtitle}</div>
+        </div>
+        <div class="lock-badge" id="badge-${key}">${unlocked[key] ? '✅' : '🔒'}</div>`;
       container.appendChild(div);
     });
   }
