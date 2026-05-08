@@ -4,26 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Dominik Lohmar</title>
-
-  <!-- PWA Meta Tags -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Dominik Lohmar" />
-  <meta name="theme-color" content="#111111" />
-  <meta name="description" content="Dominik Lohmar – Zauberkünstler" />
-
-  <!-- Icons -->
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
-
-  <!-- Web App Manifest -->
-  <link rel="manifest" href="manifest.json" />
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -42,70 +23,129 @@
       max-width: 480px;
       min-height: 100vh;
       background: #111111;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
       position: relative;
       display: flex;
       flex-direction: column;
     }
 
+    /* Status Bar */
+    .status-bar {
+      height: 50px;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 28px 0;
+      position: relative;
+      z-index: 100;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 34px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 200;
+    }
+
+    /* Scroll Container */
     .scroll-container {
       flex: 1;
+      overflow-y: visible;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
+
     .scroll-container::-webkit-scrollbar { display: none; }
 
-    /* Hero */
+    /* Hero Section */
     .hero {
       position: relative;
-      padding: 48px 24px 30px;
+      padding: 20px 24px 30px;
       text-align: center;
       background: linear-gradient(180deg, #161616 0%, #111111 100%);
       overflow: hidden;
     }
+
     .hero::before {
       content: '';
       position: absolute;
-      top: -50%; left: 50%;
+      top: -50%;
+      left: 50%;
       transform: translateX(-50%);
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(200,170,100,0.08) 0%, transparent 70%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(200, 170, 100, 0.08) 0%, transparent 70%);
       pointer-events: none;
     }
 
-    .magic-stars { position: absolute; top:0;left:0;right:0;bottom:0; pointer-events:none; }
+    .magic-stars {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+    }
+
     .star {
       position: absolute;
-      width: 2px; height: 2px;
-      background: rgba(200,170,100,0.5);
+      width: 3px;
+      height: 3px;
+      background: rgba(200,170,100,0.6);
       border-radius: 50%;
       animation: twinkle 2s infinite;
     }
+
     @keyframes twinkle {
-      0%,100% { opacity:0.15; transform:scale(1); }
-      50% { opacity:0.8; transform:scale(1.5); }
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
     }
 
-    .avatar-ring {
-      width: 100px; height: 100px;
+    .avatar-ring { cursor: pointer; } .avatar-ring-wrap {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       background: linear-gradient(135deg, #c8aa64, #e8d5a0, #c8aa64);
       padding: 3px;
       margin: 0 auto 16px;
-      cursor: pointer;
-      user-select: none;
+      position: relative;
       animation: rotateBorder 4s linear infinite;
     }
+
     @keyframes rotateBorder {
       from { filter: brightness(1); }
-      to   { filter: brightness(1.2); }
+      to { filter: brightness(1.2); }
     }
+
     .avatar-inner {
-      width:100%; height:100%;
-      border-radius:50%;
-      background:#1a1a1a;
-      display:flex; align-items:center; justify-content:center;
-      font-size:42px;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
     }
 
     .magician-name {
@@ -115,14 +155,14 @@
       color: #f0e6cc;
       letter-spacing: 3px;
       text-transform: uppercase;
-      margin-bottom: 4px;
-      cursor: pointer;
-      user-select: none;
+      margin-bottom: 6px;
     }
-    .version-tag {
-      font-size: 10px;
-      color: rgba(200,170,100,0.35);
-      letter-spacing: 2px;
+
+    .magician-tagline {
+      font-size: 11px;
+      color: rgba(200, 170, 100, 0.6);
+      letter-spacing: 4px;
+      text-transform: uppercase;
       margin-bottom: 20px;
       font-weight: 300;
     }
@@ -135,10 +175,13 @@
       flex-wrap: wrap;
       margin-bottom: 8px;
     }
+
     .chip {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(200,170,100,0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(200, 170, 100, 0.2);
       border-radius: 20px;
       padding: 7px 14px;
       color: rgba(255,255,255,0.8);
@@ -147,30 +190,37 @@
       transition: all 0.2s;
       text-decoration: none;
     }
+
     .chip:hover, .chip:active {
-      background: rgba(200,170,100,0.08);
-      border-color: rgba(200,170,100,0.5);
+      background: rgba(200, 170, 100, 0.08);
+      border-color: rgba(200, 170, 100, 0.5);
       transform: scale(1.05);
     }
+
     .chip-icon { font-size: 14px; }
 
     /* Section */
-    .section { padding: 0 20px 20px; }
+    .section {
+      padding: 0 20px 20px;
+    }
+
     .section-label {
       font-size: 10px;
       font-weight: 400;
       letter-spacing: 3px;
-      color: rgba(200,170,100,0.5);
+      color: rgba(200, 170, 100, 0.5);
       text-transform: uppercase;
+      letter-spacing: 2px;
       margin-bottom: 12px;
       padding-left: 4px;
     }
 
     /* Link Cards */
     .link-card {
-      display: flex; align-items: center;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 14px;
       padding: 14px 16px;
       margin-bottom: 8px;
@@ -178,169 +228,300 @@
       transition: all 0.25s ease;
       text-decoration: none;
       color: #fff;
-      position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
     }
+
     .link-card::before {
       content: '';
-      position: absolute; top:0;left:0;right:0;bottom:0;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(135deg, rgba(200,170,100,0.06), rgba(200,170,100,0.02));
-      opacity: 0; transition: opacity 0.25s;
+      opacity: 0;
+      transition: opacity 0.25s;
     }
+
     .link-card:hover::before, .link-card:active::before { opacity: 1; }
+
     .link-card:hover, .link-card:active {
-      border-color: rgba(200,170,100,0.25);
+      border-color: rgba(200, 170, 100, 0.25);
       transform: translateY(-1px);
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
+
     .link-icon {
-      width:44px; height:44px;
-      border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px;
-      margin-right:14px;
-      flex-shrink:0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-right: 14px;
+      flex-shrink: 0;
     }
-    .link-text { flex:1; }
-    .link-title { font-size:14px; font-weight:400; margin-bottom:2px; letter-spacing:0.3px; }
-    .link-subtitle { font-size:11px; color:rgba(255,255,255,0.35); }
-    .link-arrow { font-size:18px; color:rgba(255,255,255,0.3); margin-left:8px; }
+
+    .link-text { flex: 1; }
+    .link-title { font-size: 14px; font-weight: 400; margin-bottom: 2px; letter-spacing: 0.3px; }
+    .link-subtitle { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+    .link-arrow {
+      font-size: 18px;
+      color: rgba(255,255,255,0.3);
+      margin-left: 8px;
+    }
 
     /* Locked Cards */
     .locked-card {
-      display:flex; align-items:center;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius:16px;
-      padding:14px 16px;
-      margin-bottom:10px;
-      cursor:pointer;
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
       transition: all 0.25s ease;
-      position:relative; overflow:hidden;
+      position: relative;
+      overflow: hidden;
     }
-    .locked-card.unlocked { border-color:rgba(200,170,100,0.3); background:rgba(200,170,100,0.04); }
-    .locked-card:hover, .locked-card:active { border-color:rgba(200,170,100,0.25); transform:translateY(-2px); }
-    .lock-icon {
-      width:44px; height:44px; border-radius:12px;
-      background:rgba(255,255,255,0.06);
-      display:flex; align-items:center; justify-content:center;
-      font-size:20px; margin-right:14px; flex-shrink:0;
-    }
-    .lock-text { flex:1; }
-    .lock-title { font-size:14px; font-weight:400; color:rgba(255,255,255,0.45); margin-bottom:2px; letter-spacing:0.3px; }
-    .lock-title.unlocked-text { color:#fff; }
-    .lock-subtitle { font-size:11px; color:rgba(255,255,255,0.25); }
-    .lock-badge { font-size:18px; margin-left:8px; }
 
-    /* Modal */
+    .locked-card.unlocked {
+      border-color: rgba(200, 170, 100, 0.3);
+      background: rgba(200, 170, 100, 0.04);
+    }
+
+    .locked-card:hover, .locked-card:active {
+      border-color: rgba(200, 170, 100, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .lock-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 14px;
+      flex-shrink: 0;
+    }
+
+    .lock-text { flex: 1; }
+    .lock-title { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.45); margin-bottom: 2px; letter-spacing: 0.3px; }
+    .lock-title.unlocked-text { color: #fff; }
+    .lock-subtitle { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+    .lock-badge {
+      font-size: 18px;
+      margin-left: 8px;
+    }
+
+    /* Modal Overlay */
     .modal-overlay {
-      position: fixed;
-      top:0;left:0;right:0;bottom:0;
-      background: rgba(0,0,0,0.85);
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      display:flex; align-items:flex-end; justify-content:center;
-      z-index:1000;
-      opacity:0; pointer-events:none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.3s;
     }
-    .modal-overlay.active { opacity:1; pointer-events:all; }
-    .modal-sheet {
-      width:100%; max-width:480px;
-      background:#181818;
-      border-radius:28px 28px 0 0;
-      padding:16px 24px 48px;
-      transform:translateY(100%);
-      transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-      border-top:1px solid rgba(200,170,100,0.12);
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
     }
-    .modal-overlay.active .modal-sheet { transform:translateY(0); }
-    .modal-handle { width:40px; height:4px; background:rgba(255,255,255,0.2); border-radius:2px; margin:0 auto 20px; }
-    .modal-title { font-size:18px; font-weight:300; font-family:'Cormorant Garamond',serif; letter-spacing:2px; color:#f0e6cc; margin-bottom:6px; text-align:center; }
-    .modal-subtitle { font-size:13px; color:rgba(255,255,255,0.5); text-align:center; margin-bottom:24px; }
+
+    .modal-sheet {
+      width: 100%;
+      background: #181818;
+      border-radius: 28px 28px 0 0;
+      padding: 16px 24px 40px;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-top: 1px solid rgba(200,170,100,0.12);
+    }
+
+    .modal-overlay.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 300;
+      font-family: 'Cormorant Garamond', serif;
+      letter-spacing: 2px;
+      color: #f0e6cc;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .modal-subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      margin-bottom: 24px;
+    }
 
     .password-input {
-      width:100%;
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(200,170,100,0.2);
-      border-radius:14px;
-      padding:14px 18px;
-      font-size:16px; color:#fff;
-      outline:none;
-      letter-spacing:4px; text-align:center;
-      transition:border-color 0.2s;
-      margin-bottom:12px;
-      font-family:inherit;
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(200,170,100,0.2);
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 16px;
+      color: #fff;
+      outline: none;
+      letter-spacing: 4px;
+      text-align: center;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+      font-family: inherit;
     }
-    .password-input::placeholder { letter-spacing:1px; color:rgba(255,255,255,0.3); }
-    .password-input:focus { border-color:rgba(200,170,100,0.5); }
-    .password-input.error { border-color:#ff4757; animation:shake 0.3s ease; }
-    .password-input.admin-input { letter-spacing:0; text-align:left; padding:8px 12px; font-size:13px; margin-bottom:0; }
+
+    .password-input::placeholder { letter-spacing: 1px; color: rgba(255,255,255,0.3); }
+    .password-input:focus { border-color: rgba(200, 170, 100, 0.5); }
+    .password-input.error { border-color: #ff4757; animation: shake 0.3s ease; }
 
     @keyframes shake {
-      0%,100% { transform:translateX(0); }
-      25% { transform:translateX(-8px); }
-      75% { transform:translateX(8px); }
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
     }
 
-    .error-msg { font-size:12px; color:#ff4757; text-align:center; margin-bottom:12px; min-height:16px; }
+    .error-msg {
+      font-size: 12px;
+      color: #ff4757;
+      text-align: center;
+      margin-bottom: 12px;
+      min-height: 16px;
+    }
+
     .btn-unlock {
-      width:100%;
-      background:linear-gradient(135deg,#c8aa64,#a08840);
-      border:none; border-radius:14px;
-      padding:15px; font-size:15px; font-weight:500;
-      color:#111; cursor:pointer; transition:all 0.2s;
-      font-family:inherit; letter-spacing:0.5px;
+      width: 100%;
+      background: linear-gradient(135deg, #c8aa64, #a08840);
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
     }
-    .btn-unlock:hover,.btn-unlock:active { transform:scale(0.98); opacity:0.9; }
+
+    .btn-unlock:hover, .btn-unlock:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
     .btn-cancel {
-      width:100%; background:transparent; border:none;
-      padding:14px; font-size:14px;
-      color:rgba(255,255,255,0.4);
-      cursor:pointer; font-family:inherit; margin-top:4px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 14px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 4px;
     }
 
+    /* Success animation */
     .success-flash {
-      position:fixed; top:0;left:0;right:0;bottom:0;
-      background:radial-gradient(circle, rgba(200,170,100,0.1), transparent 70%);
-      pointer-events:none; opacity:0; z-index:5000;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle, rgba(200,170,100,0.08), transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      animation: none;
     }
-    .success-flash.animate { animation:flash 0.6s ease forwards; }
-    @keyframes flash { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0} }
 
-    .footer { padding:10px 20px 36px; text-align:center; }
-    .footer-text { font-size:11px; color:rgba(255,255,255,0.18); }
+    .success-flash.animate {
+      animation: flash 0.6s ease forwards;
+    }
 
-    .divider { height:1px; background:rgba(255,255,255,0.06); margin:4px 20px 20px; }
+    @keyframes flash {
+      0% { opacity: 0; }
+      30% { opacity: 1; }
+      100% { opacity: 0; }
+    }
 
+    /* Footer */
+    .footer {
+      padding: 10px 20px 30px;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 4px 20px 20px;
+    }
+
+    /* Unlocked link action */
     .unlocked-link-btn {
-      display:flex; align-items:center; justify-content:center; gap:8px;
-      width:100%;
-      background:rgba(200,170,100,0.08);
-      border:1px solid rgba(200,170,100,0.3);
-      border-radius:14px; padding:15px;
-      font-size:14px; font-weight:400; color:#c8aa64;
-      cursor:pointer; transition:all 0.2s;
-      font-family:inherit; margin-bottom:8px; text-decoration:none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: rgba(200,170,100,0.08);
+      border: 1px solid rgba(200,170,100,0.3);
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #c8aa64;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      margin-bottom: 8px;
+      text-decoration: none;
     }
-    .unlocked-link-btn:hover { opacity:0.85; }
 
-    /* Admin styles */
-    .admin-field-group {
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.07);
-      border-radius:12px; padding:12px; margin-bottom:8px;
-    }
-    .admin-field-group.gold { border-color:rgba(200,170,100,0.12); }
-    .admin-row { display:flex; gap:6px; margin-bottom:6px; }
-    .admin-label { font-size:10px; color:rgba(200,170,100,0.4); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
-    .admin-scroll { max-height:85vh; overflow-y:auto; padding-bottom:50px; }
-    .remove-btn { background:none; border:none; color:rgba(255,80,80,0.5); font-size:11px; cursor:pointer; margin-top:6px; }
-    .remove-btn:hover { color:rgba(255,80,80,0.9); }
+    .unlocked-link-btn:hover { opacity: 0.85; }
   </style>
 </head>
 <body>
 
 <div class="phone-frame">
+  
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-time" id="clock">9:41</div>
+    <div class="status-icons">
+      <span>●●●</span>
+      <span>WiFi</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <!-- Scroll Content -->
   <div class="scroll-container">
 
     <!-- Hero -->
@@ -349,19 +530,63 @@
       <div class="avatar-ring" id="logoClickArea" onclick="handleLogoClick()">
         <div class="avatar-inner">🎩</div>
       </div>
-      <div class="magician-name" onclick="handleLogoClick()">Dominik Lohmar</div>
-      <div class="version-tag">vers. 1.0</div>
+      <div class="magician-name" id="logoClick" onclick="handleLogoClick()">Dominik Lohmar</div>
       <div class="contact-chips">
-        <a class="chip" href="tel:+4915112345678"><span class="chip-icon">📞</span><span>Anrufen</span></a>
-        <a class="chip" href="mailto:info@dominik-lohmar.de"><span class="chip-icon">✉️</span><span>E-Mail</span></a>
-        <a class="chip" href="https://wa.me/4915112345678" target="_blank"><span class="chip-icon">💬</span><span>WhatsApp</span></a>
+        <a class="chip" href="tel:+4915112345678">
+          <span class="chip-icon">📞</span>
+          <span>Anrufen</span>
+        </a>
+        <a class="chip" href="mailto:info@alexander-mystique.de">
+          <span class="chip-icon">✉️</span>
+          <span>E-Mail</span>
+        </a>
+        <a class="chip" href="https://wa.me/4915112345678" target="_blank">
+          <span class="chip-icon">💬</span>
+          <span>WhatsApp</span>
+        </a>
       </div>
     </div>
 
     <!-- Public Links -->
-    <div class="section" style="padding-top:20px;">
+    <div class="section" style="padding-top: 20px;">
       <div class="section-label">Links & Auftritte</div>
-      <div id="publicLinksContainer"></div>
+
+      <a class="link-card" href="https://www.instagram.com" target="_blank">
+        <div class="link-icon" style="background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);">📸</div>
+        <div class="link-text">
+          <div class="link-title">Instagram</div>
+          <div class="link-subtitle">@alexander.mystique</div>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+
+      <a class="link-card" href="https://www.youtube.com" target="_blank">
+        <div class="link-icon" style="background: rgba(255,255,255,0.06);">▶️</div>
+        <div class="link-text">
+          <div class="link-title">YouTube</div>
+          <div class="link-subtitle">Zaubershows & Behind the Scenes</div>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+
+      <a class="link-card" href="https://www.tiktok.com" target="_blank">
+        <div class="link-icon" style="background: rgba(255,255,255,0.06);">🎵</div>
+        <div class="link-text">
+          <div class="link-title">TikTok</div>
+          <div class="link-subtitle">Kurzvideos & Tricks</div>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+
+      <a class="link-card" href="#" target="_blank">
+        <div class="link-icon" style="background: rgba(255,255,255,0.06);">🌐</div>
+        <div class="link-text">
+          <div class="link-title">Website</div>
+          <div class="link-subtitle">www.alexander-mystique.de</div>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+
     </div>
 
     <div class="divider"></div>
@@ -369,97 +594,177 @@
     <!-- Locked Links -->
     <div class="section">
       <div class="section-label">Exklusive Bereiche</div>
-      <div id="lockedCardsContainer"></div>
+
+      <div class="locked-card" id="card-vip" onclick="openModal('vip')">
+        <div class="lock-icon" id="icon-vip">🎭</div>
+        <div class="lock-text">
+          <div class="lock-title" id="title-vip">VIP-Backstage Zugang</div>
+          <div class="lock-subtitle" id="sub-vip">Exklusive Fotos & Videos für VIP-Gäste</div>
+        </div>
+        <div class="lock-badge" id="badge-vip">🔒</div>
+      </div>
+
+      <div class="locked-card" id="card-promo" onclick="openModal('promo')">
+        <div class="lock-icon" id="icon-promo">💎</div>
+        <div class="lock-text">
+          <div class="lock-title" id="title-promo">Aktions-Angebot</div>
+          <div class="lock-subtitle" id="sub-promo">Sonderpreis für Veranstalter</div>
+        </div>
+        <div class="lock-badge" id="badge-promo">🔒</div>
+      </div>
+
+      <div class="locked-card" id="card-pro" onclick="openModal('pro')">
+        <div class="lock-icon" id="icon-pro">🃏</div>
+        <div class="lock-text">
+          <div class="lock-title" id="title-pro">Professionelles Pressematerial</div>
+          <div class="lock-subtitle" id="sub-pro">Hochauflösende Bilder & Pressetext</div>
+        </div>
+        <div class="lock-badge" id="badge-pro">🔒</div>
+      </div>
+
     </div>
 
+    <!-- Footer -->
     <div class="footer">
       <div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
+      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.0</div>
     </div>
 
   </div><!-- end scroll -->
+
+  <!-- PIN Modal -->
+  <div class="modal-overlay" id="pinOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title" style="margin-bottom:4px;">Zugang</div>
+      <div class="modal-subtitle" style="margin-bottom:20px;">Bitte PIN eingeben</div>
+      <input class="password-input" type="password" id="pinInput" placeholder="····" maxlength="10" autocomplete="off" inputmode="numeric" />
+      <div class="error-msg" id="pinErrorMsg"></div>
+      <button class="btn-unlock" onclick="checkPin()">Bestätigen</button>
+      <button class="btn-cancel" onclick="closePin()">Abbrechen</button>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="modal-overlay" id="adminOverlay">
+    <div class="modal-sheet" style="max-height:85vh;overflow-y:auto;padding-bottom:50px;">
+      <div class="modal-handle"></div>
+      <div class="modal-title" style="margin-bottom:4px;">Admin-Bereich</div>
+      <div class="modal-subtitle" style="margin-bottom:20px;">Links & Passwörter verwalten</div>
+
+      <div style="margin-bottom:18px;">
+        <div class="section-label" style="margin-bottom:10px;">Kontakt</div>
+        <div id="adminContactFields"></div>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <div class="section-label" style="margin-bottom:10px;">Öffentliche Links</div>
+        <div id="adminPublicLinks"></div>
+        <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;width:100%;margin-top:4px;color:rgba(200,170,100,0.7);" onclick="addPublicLink()">+ Link hinzufügen</button>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <div class="section-label" style="margin-bottom:10px;">Exklusive Bereiche</div>
+        <div id="adminLockedLinks"></div>
+        <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;width:100%;margin-top:4px;color:rgba(200,170,100,0.7);" onclick="addLockedLink()">+ Bereich hinzufügen</button>
+      </div>
+
+      <button class="btn-unlock" onclick="saveAdmin()">Speichern</button>
+      <button class="btn-cancel" onclick="closeAdmin()">Schließen</button>
+    </div>
+  </div>
+
+  <!-- Success Flash -->
+  <div class="success-flash" id="successFlash"></div>
+
 </div><!-- end phone-frame -->
 
-<!-- Password Modal -->
+<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modalTitle">Bereich freischalten</div>
     <div class="modal-subtitle" id="modalSubtitle">Bitte gib dein Passwort ein</div>
+
     <div id="modalLockView">
-      <input class="password-input" type="password" id="passwordInput" placeholder="Passwort" maxlength="30" autocomplete="off" />
+      <input
+        class="password-input"
+        type="password"
+        id="passwordInput"
+        placeholder="Passwort"
+        maxlength="20"
+        autocomplete="off"
+      />
       <div class="error-msg" id="errorMsg"></div>
-      <button class="btn-unlock" onclick="tryUnlock()">Freischalten</button>
+      <button class="btn-unlock" onclick="tryUnlock()">🔓 Freischalten</button>
       <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
     </div>
+
     <div id="modalUnlockView" style="display:none;">
-      <a class="unlocked-link-btn" id="unlockedLinkBtn" href="#" target="_blank">Zum Inhalt</a>
+      <a class="unlocked-link-btn" id="unlockedLinkBtn" href="#" target="_blank">
+        ✨ Zum Inhalt
+      </a>
       <button class="btn-cancel" onclick="closeModal()">Schließen</button>
     </div>
   </div>
 </div>
 
-<!-- Admin Modal -->
-<div class="modal-overlay" id="adminOverlay">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" style="margin-bottom:4px;">Admin-Bereich</div>
-    <div class="modal-subtitle" style="margin-bottom:16px;">Links & Passwörter verwalten</div>
-    <div class="admin-scroll">
-      <div style="margin-bottom:18px;">
-        <div class="section-label" style="margin-bottom:8px;">Öffentliche Links</div>
-        <div id="adminPublicLinks"></div>
-        <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;color:rgba(200,170,100,0.6);margin-top:2px;" onclick="addPublicLink()">+ Link hinzufügen</button>
-      </div>
-      <div style="margin-bottom:18px;">
-        <div class="section-label" style="margin-bottom:8px;">Exklusive Bereiche</div>
-        <div id="adminLockedLinks"></div>
-        <button class="btn-cancel" style="border:1px solid rgba(200,170,100,0.2);border-radius:10px;color:rgba(200,170,100,0.6);margin-top:2px;" onclick="addLockedLink()">+ Bereich hinzufügen</button>
-      </div>
-      <button class="btn-unlock" onclick="saveAdmin()">Speichern</button>
-      <button class="btn-cancel" onclick="closeAdmin()">Schließen</button>
-    </div>
-  </div>
-</div>
-
-<!-- Success Flash -->
-<div class="success-flash" id="successFlash"></div>
-
 <script>
-  // ── Data ─────────────────────────────────────────────────────────────────────
-  let publicLinks = JSON.parse(localStorage.getItem('dl_public') || 'null') || [
-    { icon:'📸', title:'Instagram', subtitle:'@dominik.lohmar', url:'https://www.instagram.com' },
-    { icon:'▶️', title:'YouTube', subtitle:'Zaubershows & Behind the Scenes', url:'https://www.youtube.com' },
-    { icon:'🎵', title:'TikTok', subtitle:'Kurzvideos & Tricks', url:'https://www.tiktok.com' },
-    { icon:'🌐', title:'Website', subtitle:'www.dominik-lohmar.de', url:'#' }
-  ];
-
-  let lockedItems = JSON.parse(localStorage.getItem('dl_locked') || 'null') || {
-    vip:   { password:'vip2026',  title:'VIP-Backstage Zugang',         subtitle:'Exklusive Fotos & Videos für VIP-Gäste', url:'https://www.example.com/vip',   linkLabel:'Backstage-Galerie öffnen' },
-    promo: { password:'magic50',  title:'Aktions-Angebot',              subtitle:'Sonderpreis für Veranstalter',           url:'https://www.example.com/promo', linkLabel:'Angebot anzeigen' },
-    pro:   { password:'press24',  title:'Pressematerial',               subtitle:'Hochauflösende Bilder & Pressetext',     url:'https://www.example.com/press', linkLabel:'Pressemappe herunterladen' }
+  // ── Config ──────────────────────────────────────────────────────────────────
+  const lockedItems = {
+    vip: {
+      password: 'vip2026',
+      title: 'VIP-Backstage Zugang',
+      subtitle: 'Exklusive Fotos & Videos für VIP-Gäste',
+      url: 'https://www.example.com/vip',
+      linkLabel: '🎭 Backstage-Galerie öffnen'
+    },
+    promo: {
+      password: 'magic50',
+      title: 'Aktions-Angebot',
+      subtitle: 'Sonderpreis für Veranstalter',
+      url: 'https://www.example.com/promo',
+      linkLabel: '💎 Angebot anzeigen'
+    },
+    pro: {
+      password: 'press24',
+      title: 'Pressematerial',
+      subtitle: 'Hochauflösende Bilder & Pressetext',
+      url: 'https://www.example.com/press',
+      linkLabel: '🃏 Pressemappe herunterladen'
+    }
   };
 
   const unlocked = {};
   let currentKey = null;
 
-  // ── Render Public ─────────────────────────────────────────────────────────────
+  // ── Clock ────────────────────────────────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2,'0');
+    const m = now.getMinutes().toString().padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   function renderPublicLinks() {
-    const c = document.getElementById('publicLinksContainer');
-    c.innerHTML = '';
-    publicLinks.forEach(lnk => {
+    const container = document.getElementById('publicLinksContainer');
+    container.innerHTML = '';
+    publicLinks.forEach((lnk, i) => {
       const a = document.createElement('a');
       a.className = 'link-card';
       a.href = lnk.url;
       a.target = '_blank';
-      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06)">${lnk.icon}</div><div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle}</div></div><div class="link-arrow">›</div>`;
-      c.appendChild(a);
+      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${lnk.icon}</div><div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle}</div></div><div class="link-arrow">›</div>`;
+      container.appendChild(a);
     });
   }
 
-  // ── Render Locked ─────────────────────────────────────────────────────────────
   function renderLockedCards() {
-    const c = document.getElementById('lockedCardsContainer');
-    c.innerHTML = '';
+    const container = document.getElementById('lockedCardsContainer');
+    container.innerHTML = '';
     Object.keys(lockedItems).forEach(key => {
       const item = lockedItems[key];
       const div = document.createElement('div');
@@ -467,109 +772,102 @@
       div.id = 'card-' + key;
       div.onclick = () => openModal(key);
       div.innerHTML = `<div class="lock-icon" id="icon-${key}">🔐</div><div class="lock-text"><div class="lock-title${unlocked[key]?' unlocked-text':''}" id="title-${key}">${item.title}</div><div class="lock-subtitle" id="sub-${key}">${item.subtitle}</div></div><div class="lock-badge" id="badge-${key}">${unlocked[key]?'✅':'🔒'}</div>`;
-      c.appendChild(div);
+      container.appendChild(div);
     });
   }
 
   renderPublicLinks();
   renderLockedCards();
 
-  // ── Stars ─────────────────────────────────────────────────────────────────────
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 18; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.left = Math.random() * 100 + '%';
-    s.style.top  = Math.random() * 100 + '%';
-    s.style.animationDelay    = Math.random() * 3 + 's';
-    s.style.animationDuration = (2 + Math.random() * 2) + 's';
-    starsEl.appendChild(s);
+  // ── Contact Data ─────────────────────────────────────────────────────────────
+  let contactData = JSON.parse(localStorage.getItem('dl_contact') || 'null') || {
+    phone: '+4915112345678',
+    email: 'info@dominik-lohmar.de',
+    whatsapp: '4915112345678'
+  };
+
+  function applyContactData() {
+    document.getElementById('chipPhone').href = 'tel:' + contactData.phone;
+    document.getElementById('chipEmail').href = 'mailto:' + contactData.email;
+    document.getElementById('chipWhatsapp').href = 'https://wa.me/' + contactData.whatsapp;
+  }
+  applyContactData();
+
+  function renderAdminContact() {
+    const c = document.getElementById('adminContactFields');
+    c.innerHTML = `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+      <div style="margin-bottom:6px;"><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Telefon</div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="+49..." value="${contactData.phone}" id="admin_phone" /></div>
+      <div style="margin-bottom:6px;"><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">E-Mail</div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="info@..." value="${contactData.email}" id="admin_email" /></div>
+      <div><div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">WhatsApp (nur Ziffern, ohne +)</div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="49..." value="${contactData.whatsapp}" id="admin_whatsapp" /></div>
+    </div>`;
   }
 
-  // ── Secret Logo Click ─────────────────────────────────────────────────────────
-  let logoClickCount = 0, logoClickTimer = null;
+  // ── Logo Click (secret admin) ────────────────────────────────────────────────
+  let logoClickCount = 0;
+  let logoClickTimer = null;
   function handleLogoClick() {
     logoClickCount++;
     clearTimeout(logoClickTimer);
     logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 2000);
-    if (logoClickCount >= 5) { logoClickCount = 0; openAdmin(); }
-  }
-
-  // ── Password Modal ────────────────────────────────────────────────────────────
-  function openModal(key) {
-    currentKey = key;
-    const item = lockedItems[key];
-    document.getElementById('modalTitle').textContent = item.title;
-    document.getElementById('errorMsg').textContent = '';
-    document.getElementById('passwordInput').value = '';
-    document.getElementById('passwordInput').classList.remove('error');
-    if (unlocked[key]) {
-      document.getElementById('modalSubtitle').textContent = '✅ Bereits freigeschaltet!';
-      document.getElementById('modalLockView').style.display = 'none';
-      document.getElementById('modalUnlockView').style.display = 'block';
-      const btn = document.getElementById('unlockedLinkBtn');
-      btn.href = item.url; btn.textContent = item.linkLabel;
-    } else {
-      document.getElementById('modalSubtitle').textContent = 'Bitte gib dein Passwort ein';
-      document.getElementById('modalLockView').style.display = 'block';
-      document.getElementById('modalUnlockView').style.display = 'none';
-    }
-    document.getElementById('modalOverlay').classList.add('active');
-    setTimeout(() => document.getElementById('passwordInput').focus(), 400);
-  }
-  function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('active');
-    currentKey = null;
-  }
-  function tryUnlock() {
-    const input = document.getElementById('passwordInput');
-    const item  = lockedItems[currentKey];
-    if (input.value === item.password) {
-      unlocked[currentKey] = true;
-      document.getElementById('errorMsg').textContent = '';
-      document.getElementById('card-' + currentKey).classList.add('unlocked');
-      document.getElementById('badge-' + currentKey).textContent = '✅';
-      document.getElementById('title-' + currentKey).classList.add('unlocked-text');
-      const flash = document.getElementById('successFlash');
-      flash.classList.remove('animate'); void flash.offsetWidth; flash.classList.add('animate');
-      document.getElementById('modalLockView').style.display = 'none';
-      document.getElementById('modalUnlockView').style.display = 'block';
-      document.getElementById('modalSubtitle').textContent = '✅ Erfolgreich freigeschaltet!';
-      const btn = document.getElementById('unlockedLinkBtn');
-      btn.href = item.url; btn.textContent = item.linkLabel;
-    } else {
-      input.classList.add('error');
-      document.getElementById('errorMsg').textContent = 'Falsches Passwort. Bitte versuche es erneut.';
-      setTimeout(() => input.classList.remove('error'), 400);
-      input.value = '';
+    if (logoClickCount >= 5) {
+      logoClickCount = 0;
+      handleLogoClickWithPin();
     }
   }
-  document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key==='Enter') tryUnlock(); });
-  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target===document.getElementById('modalOverlay')) closeModal(); });
 
-  // ── Admin Panel ───────────────────────────────────────────────────────────────
+  // ── PIN Check ─────────────────────────────────────────────────────────────────
+  const ADMIN_PIN = '0815';
+  function handleLogoClickWithPin() {
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinErrorMsg').textContent = '';
+    document.getElementById('pinOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('pinInput').focus(), 400);
+  }
+  function checkPin() {
+    const val = document.getElementById('pinInput').value;
+    if (val === ADMIN_PIN) {
+      closePin();
+      openAdmin();
+    } else {
+      const inp = document.getElementById('pinInput');
+      inp.classList.add('error');
+      document.getElementById('pinErrorMsg').textContent = 'Falsche PIN.';
+      setTimeout(() => inp.classList.remove('error'), 400);
+      inp.value = '';
+    }
+  }
+  function closePin() {
+    document.getElementById('pinOverlay').classList.remove('active');
+  }
+  document.getElementById('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPin(); });
+  document.getElementById('pinOverlay').addEventListener('click', e => { if (e.target === document.getElementById('pinOverlay')) closePin(); });
+
+  // ── Admin Panel ──────────────────────────────────────────────────────────────
   function openAdmin() {
-    renderAdminPublic(); renderAdminLocked();
+    renderAdminContact();
+    renderAdminPublic();
+    renderAdminLocked();
     document.getElementById('adminOverlay').classList.add('active');
   }
-  function closeAdmin() { document.getElementById('adminOverlay').classList.remove('active'); }
-
-  function inp(id,val,placeholder,extra='') {
-    return `<input class="password-input admin-input" id="${id}" value="${val.replace(/"/g,'&quot;')}" placeholder="${placeholder}" ${extra} />`;
+  function closeAdmin() {
+    document.getElementById('adminOverlay').classList.remove('active');
   }
 
   function renderAdminPublic() {
     const c = document.getElementById('adminPublicLinks');
     c.innerHTML = '';
     publicLinks.forEach((lnk, i) => {
-      c.innerHTML += `<div class="admin-field-group">
-        <div class="admin-row">
-          <input class="password-input admin-input" id="pub_icon_${i}" value="${lnk.icon}" placeholder="Icon" style="width:54px;text-align:center;font-size:20px;" />
-          <input class="password-input admin-input" id="pub_title_${i}" value="${lnk.title.replace(/"/g,'&quot;')}" placeholder="Titel" style="flex:1;" />
+      c.innerHTML += `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+        <div style="display:flex;gap:6px;margin-bottom:6px;">
+          <input class="password-input" style="width:60px;padding:8px;letter-spacing:0;text-align:center;font-size:18px;" placeholder="Icon" value="${lnk.icon}" id="pub_icon_${i}" />
+          <input class="password-input" style="flex:1;padding:8px;letter-spacing:0;text-align:left;" placeholder="Titel" value="${lnk.title}" id="pub_title_${i}" />
         </div>
-        <div style="margin-bottom:6px;">${inp('pub_sub_'+i, lnk.subtitle, 'Untertitel', 'style="width:100%"')}</div>
-        <div>${inp('pub_url_'+i, lnk.url, 'URL', 'style="width:100%"')}</div>
-        <button class="remove-btn" onclick="removePublic(${i})">✕ Entfernen</button>
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Untertitel" value="${lnk.subtitle}" id="pub_sub_${i}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;" placeholder="URL" value="${lnk.url}" id="pub_url_${i}" />
+        <button onclick="removePublic(${i})" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
       </div>`;
     });
   }
@@ -579,42 +877,163 @@
     c.innerHTML = '';
     Object.keys(lockedItems).forEach(key => {
       const item = lockedItems[key];
-      c.innerHTML += `<div class="admin-field-group gold">
-        <div style="margin-bottom:6px;">${inp('lck_title_'+key, item.title, 'Titel', 'style="width:100%"')}</div>
-        <div style="margin-bottom:6px;">${inp('lck_sub_'+key, item.subtitle, 'Untertitel', 'style="width:100%"')}</div>
-        <div style="margin-bottom:6px;">${inp('lck_url_'+key, item.url, 'URL', 'style="width:100%"')}</div>
-        <div style="margin-bottom:6px;">${inp('lck_label_'+key, item.linkLabel, 'Link-Label', 'style="width:100%"')}</div>
-        <div><label class="admin-label">Passwort</label>${inp('lck_pw_'+key, item.password, 'Passwort', 'style="width:100%;letter-spacing:2px;"')}</div>
-        <button class="remove-btn" onclick="removeLocked('${key}')">✕ Entfernen</button>
+      c.innerHTML += `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,170,100,0.1);border-radius:12px;padding:12px;margin-bottom:8px;">
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Titel" value="${item.title}" id="lck_title_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Untertitel" value="${item.subtitle}" id="lck_sub_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="URL" value="${item.url}" id="lck_url_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:0;text-align:left;margin-bottom:6px;" placeholder="Link-Label" value="${item.linkLabel}" id="lck_label_${key}" />
+        <input class="password-input" style="width:100%;padding:8px;letter-spacing:2px;text-align:left;" placeholder="Passwort" value="${item.password}" id="lck_pw_${key}" />
+        <button onclick="removeLocked('${key}')" style="margin-top:6px;background:none;border:none;color:rgba(255,80,80,0.6);font-size:12px;cursor:pointer;">✕ Entfernen</button>
       </div>`;
     });
   }
 
-  function addPublicLink()  { publicLinks.push({icon:'🔗',title:'Neuer Link',subtitle:'',url:'#'}); renderAdminPublic(); }
-  function removePublic(i)  { publicLinks.splice(i,1); renderAdminPublic(); }
-  function addLockedLink()  { const k='lock_'+Date.now(); lockedItems[k]={password:'passwort',title:'Neuer Bereich',subtitle:'',url:'#',linkLabel:'Öffnen'}; renderAdminLocked(); }
-  function removeLocked(k)  { delete lockedItems[k]; renderAdminLocked(); }
+  function addPublicLink() {
+    publicLinks.push({ icon: '🔗', title: 'Neuer Link', subtitle: '', url: '#' });
+    renderAdminPublic();
+  }
+
+  function removePublic(i) {
+    publicLinks.splice(i, 1);
+    renderAdminPublic();
+  }
+
+  function addLockedLink() {
+    const key = 'lock_' + Date.now();
+    lockedItems[key] = { password: 'passwort', title: 'Neuer Bereich', subtitle: '', url: '#', linkLabel: '🔓 Öffnen' };
+    renderAdminLocked();
+  }
+
+  function removeLocked(key) {
+    delete lockedItems[key];
+    renderAdminLocked();
+  }
 
   function saveAdmin() {
-    publicLinks.forEach((lnk,i) => {
-      lnk.icon     = document.getElementById('pub_icon_'+i).value;
-      lnk.title    = document.getElementById('pub_title_'+i).value;
-      lnk.subtitle = document.getElementById('pub_sub_'+i).value;
-      lnk.url      = document.getElementById('pub_url_'+i).value;
+    // Read public
+    publicLinks.forEach((lnk, i) => {
+      lnk.icon = document.getElementById('pub_icon_' + i).value;
+      lnk.title = document.getElementById('pub_title_' + i).value;
+      lnk.subtitle = document.getElementById('pub_sub_' + i).value;
+      lnk.url = document.getElementById('pub_url_' + i).value;
     });
+    // Read locked
     Object.keys(lockedItems).forEach(key => {
-      lockedItems[key].title     = document.getElementById('lck_title_'+key).value;
-      lockedItems[key].subtitle  = document.getElementById('lck_sub_'+key).value;
-      lockedItems[key].url       = document.getElementById('lck_url_'+key).value;
-      lockedItems[key].linkLabel = document.getElementById('lck_label_'+key).value;
-      lockedItems[key].password  = document.getElementById('lck_pw_'+key).value;
+      lockedItems[key].title = document.getElementById('lck_title_' + key).value;
+      lockedItems[key].subtitle = document.getElementById('lck_sub_' + key).value;
+      lockedItems[key].url = document.getElementById('lck_url_' + key).value;
+      lockedItems[key].linkLabel = document.getElementById('lck_label_' + key).value;
+      lockedItems[key].password = document.getElementById('lck_pw_' + key).value;
     });
+    contactData.phone     = document.getElementById('admin_phone').value;
+    contactData.email     = document.getElementById('admin_email').value;
+    contactData.whatsapp  = document.getElementById('admin_whatsapp').value;
+    localStorage.setItem('dl_contact', JSON.stringify(contactData));
+    applyContactData();
     localStorage.setItem('dl_public', JSON.stringify(publicLinks));
     localStorage.setItem('dl_locked', JSON.stringify(lockedItems));
-    renderPublicLinks(); renderLockedCards();
+    renderPublicLinks();
+    renderLockedCards();
     closeAdmin();
   }
-  document.getElementById('adminOverlay').addEventListener('click', e => { if(e.target===document.getElementById('adminOverlay')) closeAdmin(); });
+
+  document.getElementById('adminOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('adminOverlay')) closeAdmin();
+  });
+
+  // ── Stars ────────────────────────────────────────────────────────────────────
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 20; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    s.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    starsEl.appendChild(s);
+  }
+
+  // ── Modal ────────────────────────────────────────────────────────────────────
+  function openModal(key) {
+    currentKey = key;
+    const item = lockedItems[key];
+    const overlay = document.getElementById('modalOverlay');
+    const lockView = document.getElementById('modalLockView');
+    const unlockView = document.getElementById('modalUnlockView');
+
+    document.getElementById('modalTitle').textContent = item.title;
+    document.getElementById('errorMsg').textContent = '';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').classList.remove('error');
+
+    if (unlocked[key]) {
+      document.getElementById('modalSubtitle').textContent = '✅ Bereits freigeschaltet!';
+      lockView.style.display = 'none';
+      unlockView.style.display = 'block';
+      const btn = document.getElementById('unlockedLinkBtn');
+      btn.href = item.url;
+      btn.textContent = item.linkLabel;
+    } else {
+      document.getElementById('modalSubtitle').textContent = 'Bitte gib dein Passwort ein';
+      lockView.style.display = 'block';
+      unlockView.style.display = 'none';
+    }
+
+    overlay.classList.add('active');
+    setTimeout(() => document.getElementById('passwordInput').focus(), 400);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentKey = null;
+  }
+
+  function tryUnlock() {
+    const input = document.getElementById('passwordInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const item = lockedItems[currentKey];
+
+    if (input.value === item.password) {
+      unlocked[currentKey] = true;
+      errorMsg.textContent = '';
+
+      // Update card UI
+      const card = document.getElementById('card-' + currentKey);
+      card.classList.add('unlocked');
+      document.getElementById('badge-' + currentKey).textContent = '✅';
+      document.getElementById('title-' + currentKey).classList.add('unlocked-text');
+
+      // Success flash
+      const flash = document.getElementById('successFlash');
+      flash.classList.remove('animate');
+      void flash.offsetWidth;
+      flash.classList.add('animate');
+
+      // Switch to unlock view
+      document.getElementById('modalLockView').style.display = 'none';
+      document.getElementById('modalUnlockView').style.display = 'block';
+      document.getElementById('modalSubtitle').textContent = '✅ Erfolgreich freigeschaltet!';
+      const btn = document.getElementById('unlockedLinkBtn');
+      btn.href = item.url;
+      btn.textContent = item.linkLabel;
+
+    } else {
+      input.classList.add('error');
+      errorMsg.textContent = '❌ Falsches Passwort. Bitte versuche es erneut.';
+      setTimeout(() => input.classList.remove('error'), 400);
+      input.value = '';
+    }
+  }
+
+  // Enter key support
+  document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') tryUnlock();
+  });
+
+  // Close on overlay click
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
 </script>
 </body>
 </html>
