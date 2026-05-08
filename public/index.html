@@ -569,7 +569,7 @@ text-decoration: none;
 <!-- Footer -->
 <div class="footer">
 <div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
-<div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.6</div>
+<div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.7</div>
 </div>
 
 </div><!-- end scroll -->
@@ -595,6 +595,11 @@ text-decoration: none;
 <div class="modal-subtitle" style="margin-bottom:20px;">Links & Passwörter verwalten</div>
 
 <div style="margin-bottom:18px;">
+<div class="section-label" style="margin-bottom:10px;">Admin</div>
+<div id="adminPinFields"></div>
+</div>
+
+<div style="margin-bottom:18px;">
 <div class="section-label" style="margin-bottom:10px;">Kontakt</div>
 <div id="adminContactFields"></div>
 </div>
@@ -612,6 +617,9 @@ text-decoration: none;
 </div>
 
 <button class="btn-unlock" onclick="saveAdmin()">Speichern</button>
+<button class="btn-cancel" onclick="exportConfig()">Export (JSON)</button>
+<button class="btn-cancel" onclick="importConfig()">Import (JSON)</button>
+<button class="btn-cancel" onclick="resetToDefaults()" style="color:rgba(255,80,80,0.75);">Reset auf Standard</button>
 <button class="btn-cancel" onclick="closeAdmin()">Schließen</button>
 </div>
 </div>
@@ -955,6 +963,7 @@ autocomplete="off"
   }
 
   function openAdmin() {
+    renderAdminPin();
     renderAdminContact();
     renderAdminPublic();
     renderAdminLocked();
@@ -989,28 +998,39 @@ autocomplete="off"
     renderLockedCards();
   };
 
+  function sanitizeUrl(url) {
+    const u = String(url || '').trim();
+    if (!u) return '#';
+    if (/^javascript\s*:/i.test(u)) return '#';
+    return u;
+  }
+
   function saveAdmin() {
     // Public
     (publicLinks || []).forEach((lnk, i) => {
       lnk.icon = document.getElementById('pub_icon_' + i).value;
       lnk.title = document.getElementById('pub_title_' + i).value;
       lnk.subtitle = document.getElementById('pub_sub_' + i).value;
-      lnk.url = document.getElementById('pub_url_' + i).value;
+      lnk.url = sanitizeUrl(document.getElementById('pub_url_' + i).value);
     });
 
     // Locked
     Object.keys(lockedItems || {}).forEach((key) => {
       lockedItems[key].title = document.getElementById('lck_title_' + key).value;
       lockedItems[key].subtitle = document.getElementById('lck_sub_' + key).value;
-      lockedItems[key].url = document.getElementById('lck_url_' + key).value;
+      lockedItems[key].url = sanitizeUrl(document.getElementById('lck_url_' + key).value);
       lockedItems[key].linkLabel = document.getElementById('lck_label_' + key).value;
       lockedItems[key].password = document.getElementById('lck_pw_' + key).value;
     });
 
     // Contact
-    contactData.phone = document.getElementById('admin_phone').value;
-    contactData.email = document.getElementById('admin_email').value;
-    contactData.whatsapp = document.getElementById('admin_whatsapp').value;
+    contactData.phone = String(document.getElementById('admin_phone').value || '').trim();
+    contactData.email = String(document.getElementById('admin_email').value || '').trim();
+    contactData.whatsapp = String(document.getElementById('admin_whatsapp').value || '').replace(/[^0-9]/g,'');
+
+    // Admin PIN (optional)
+    const newPin = String(document.getElementById('admin_pin')?.value || '').trim();
+    if (newPin) localStorage.setItem(LS_ADMINPIN, newPin);
 
     saveJson(LS_PUBLIC, publicLinks);
     saveJson(LS_LOCKED, lockedItems);
@@ -1022,6 +1042,63 @@ autocomplete="off"
     closeAdmin();
   }
   window.saveAdmin = saveAdmin;
+
+  function exportConfig() {
+    const payload = {
+      publicLinks,
+      lockedItems,
+      contactData,
+      adminPin: getAdminPin(),
+      unlocked
+    };
+    const text = JSON.stringify(payload, null, 2);
+    navigator.clipboard?.writeText(text).then(() => {
+      alert('Konfiguration in Zwischenablage kopiert.');
+    }).catch(() => {
+      prompt('Kopieren (Strg/Cmd+C):', text);
+    });
+  }
+  window.exportConfig = exportConfig;
+
+  function importConfig() {
+    const text = prompt('Konfiguration (JSON) einfuegen:');
+    if (!text) return;
+    try {
+      const obj = JSON.parse(text);
+      if (obj.publicLinks) { publicLinks = obj.publicLinks; saveJson(LS_PUBLIC, publicLinks); }
+      if (obj.lockedItems) { lockedItems = obj.lockedItems; saveJson(LS_LOCKED, lockedItems); }
+      if (obj.contactData) { contactData = obj.contactData; saveJson(LS_CONTACT, contactData); }
+      if (obj.adminPin) { localStorage.setItem(LS_ADMINPIN, String(obj.adminPin)); }
+      if (obj.unlocked) { Object.assign(unlocked, obj.unlocked); saveJson(LS_UNLOCKED, unlocked); }
+
+      applyContactData();
+      renderPublicLinks();
+      renderLockedCards();
+
+      if (document.getElementById('adminOverlay')?.classList.contains('active')) {
+        renderAdminPin();
+        renderAdminContact();
+        renderAdminPublic();
+        renderAdminLocked();
+      }
+
+      alert('Import erfolgreich.');
+    } catch (e) {
+      alert('Ungueltiges JSON.');
+    }
+  }
+  window.importConfig = importConfig;
+
+  function resetToDefaults() {
+    if (!confirm('Alles auf Standard zuruecksetzen? (Links, Passwoerter, Kontakt, PIN, Freischaltungen)')) return;
+    localStorage.removeItem(LS_PUBLIC);
+    localStorage.removeItem(LS_LOCKED);
+    localStorage.removeItem(LS_CONTACT);
+    localStorage.removeItem(LS_ADMINPIN);
+    localStorage.removeItem(LS_UNLOCKED);
+    location.reload();
+  }
+  window.resetToDefaults = resetToDefaults;
 
   document.getElementById('adminOverlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('adminOverlay')) closeAdmin();
