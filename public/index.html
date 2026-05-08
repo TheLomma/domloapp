@@ -121,7 +121,8 @@
       50% { opacity: 1; transform: scale(1.5); }
     }
 
-    .avatar-ring { cursor: pointer; } .avatar-ring-wrap {
+    .avatar-ring {
+      cursor: pointer;
       width: 100px;
       height: 100px;
       border-radius: 50%;
@@ -130,6 +131,7 @@
       margin: 0 auto 16px;
       position: relative;
       animation: rotateBorder 4s linear infinite;
+      user-select: none;
     }
 
     @keyframes rotateBorder {
@@ -212,10 +214,9 @@
     .section-label {
       font-size: 10px;
       font-weight: 400;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       color: rgba(200, 170, 100, 0.5);
       text-transform: uppercase;
-      letter-spacing: 2px;
       margin-bottom: 12px;
       padding-left: 4px;
     }
@@ -326,7 +327,7 @@
 
     /* Modal Overlay */
     .modal-overlay {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(10px);
@@ -451,7 +452,7 @@
 
     /* Success animation */
     .success-flash {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(circle, rgba(200,170,100,0.08), transparent 70%);
       pointer-events: none;
@@ -537,15 +538,15 @@
       </div>
       <div class="magician-name" id="logoClick" onclick="handleLogoClick()">Dominik Lohmar</div>
       <div class="contact-chips">
-        <a class="chip" href="tel:+491732982090">
+        <a class="chip" id="chipPhone" href="tel:+491732982090">
           <span class="chip-icon">📞</span>
           <span>Anrufen</span>
         </a>
-        <a class="chip" href="mailto:lohmar.dominik@gmail.com">
+        <a class="chip" id="chipEmail" href="mailto:lohmar.dominik@gmail.com">
           <span class="chip-icon">✉️</span>
           <span>E-Mail</span>
         </a>
-        <a class="chip" href="https://wa.me/491732982090" target="_blank">
+        <a class="chip" id="chipWhatsapp" href="https://wa.me/491732982090" target="_blank" rel="noopener noreferrer">
           <span class="chip-icon">💬</span>
           <span>WhatsApp</span>
         </a>
@@ -589,7 +590,7 @@
     <!-- Footer -->
     <div class="footer">
       <div class="footer-text">Dominik Lohmar · Alle Rechte vorbehalten</div>
-      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.1</div>
+      <div class="footer-text" style="margin-top:4px;opacity:0.5;">vers. 1.2</div>
     </div>
 
   </div><!-- end scroll -->
@@ -615,6 +616,11 @@
       <div class="modal-subtitle" style="margin-bottom:20px;">Links & Passwörter verwalten</div>
 
       <div style="margin-bottom:18px;">
+        <div class="section-label" style="margin-bottom:10px;">Admin</div>
+        <div id="adminPinFields"></div>
+      </div>
+
+      <div style="margin-bottom:18px;">
         <div class="section-label" style="margin-bottom:10px;">Kontakt</div>
         <div id="adminContactFields"></div>
       </div>
@@ -632,6 +638,9 @@
       </div>
 
       <button class="btn-unlock" onclick="saveAdmin()">Speichern</button>
+      <button class="btn-cancel" onclick="exportConfig()">Export (JSON)</button>
+      <button class="btn-cancel" onclick="importConfig()">Import (JSON)</button>
+      <button class="btn-cancel" onclick="resetToDefaults()" style="color:rgba(255,80,80,0.75);">Reset auf Standard</button>
       <button class="btn-cancel" onclick="closeAdmin()">Schließen</button>
     </div>
   </div>
@@ -704,7 +713,7 @@
     }
   };
 
-  const unlocked = {};
+  const unlocked = JSON.parse(localStorage.getItem('dl_unlocked') || '{}');
   let currentKey = null;
 
   // ── Clock ────────────────────────────────────────────────────────────────────
@@ -818,7 +827,10 @@
   }
 
   // ── PIN Check ─────────────────────────────────────────────────────────────────
-  const ADMIN_PIN = '0815';
+  const ADMIN_PIN_DEFAULT = '0815';
+  function getAdminPin() {
+    return localStorage.getItem('dl_admin_pin') || ADMIN_PIN_DEFAULT;
+  }
   function handleLogoClickWithPin() {
     document.getElementById('pinInput').value = '';
     document.getElementById('pinErrorMsg').textContent = '';
@@ -827,7 +839,7 @@
   }
   function checkPin() {
     const val = document.getElementById('pinInput').value;
-    if (val === ADMIN_PIN) {
+    if (val === getAdminPin()) {
       closePin();
       openAdmin();
     } else {
@@ -846,6 +858,7 @@
 
   // ── Admin Panel ──────────────────────────────────────────────────────────────
   function openAdmin() {
+    renderAdminPin();
     renderAdminContact();
     renderAdminPublic();
     renderAdminLocked();
@@ -853,6 +866,59 @@
   }
   function closeAdmin() {
     document.getElementById('adminOverlay').classList.remove('active');
+  }
+
+  function resetToDefaults() {
+    if (!confirm('Alles auf Standard zuruecksetzen? (Links, Passwoerter, Kontakt, PIN, Freischaltungen)')) return;
+    localStorage.removeItem('dl_public');
+    localStorage.removeItem('dl_locked');
+    localStorage.removeItem('dl_contact');
+    localStorage.removeItem('dl_admin_pin');
+    localStorage.removeItem('dl_unlocked');
+    location.reload();
+  }
+
+  function exportConfig() {
+    const payload = {
+      publicLinks,
+      lockedItems,
+      contactData,
+      adminPin: getAdminPin()
+    };
+    const text = JSON.stringify(payload, null, 2);
+    navigator.clipboard?.writeText(text).then(() => {
+      alert('Konfiguration in Zwischenablage kopiert.');
+    }).catch(() => {
+      prompt('Kopieren (Strg/Cmd+C):', text);
+    });
+  }
+
+  function importConfig() {
+    const text = prompt('Konfiguration (JSON) einfuegen:');
+    if (!text) return;
+    try {
+      const obj = JSON.parse(text);
+      if (obj.publicLinks) { publicLinks = obj.publicLinks; localStorage.setItem('dl_public', JSON.stringify(publicLinks)); }
+      if (obj.lockedItems) { lockedItems = obj.lockedItems; localStorage.setItem('dl_locked', JSON.stringify(lockedItems)); }
+      if (obj.contactData) { contactData = obj.contactData; localStorage.setItem('dl_contact', JSON.stringify(contactData)); applyContactData(); }
+      if (obj.adminPin) { localStorage.setItem('dl_admin_pin', String(obj.adminPin)); }
+      renderPublicLinks();
+      renderLockedCards();
+      alert('Import erfolgreich.');
+    } catch (e) {
+      alert('Ungueltiges JSON.');
+    }
+  }
+
+  function renderAdminPin() {
+    const c = document.getElementById('adminPinFields');
+    if (!c) return;
+    const current = getAdminPin();
+    c.innerHTML = `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+      <div style="font-size:10px;color:rgba(200,170,100,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Admin-PIN</div>
+      <input class="password-input" style="width:100%;padding:8px;letter-spacing:2px;text-align:left;" placeholder="PIN" value="${current}" id="admin_pin" inputmode="numeric" />
+      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;line-height:1.3;">Hinweis: Diese PIN ist nur ein UI-Schutz. Wer den Code sehen kann, kann sie theoretisch auslesen.</div>
+    </div>`;
   }
 
   function renderAdminPublic() {
@@ -908,29 +974,47 @@
     renderAdminLocked();
   }
 
+  function sanitizeUrl(url) {
+    const u = String(url || '').trim();
+    if (!u) return '#';
+    // Block javascript: URLs
+    if (/^javascript\s*:/i.test(u)) return '#';
+    return u;
+  }
+
   function saveAdmin() {
+    // Read admin pin
+    const newPin = document.getElementById('admin_pin')?.value;
+    if (newPin && newPin.trim().length > 0) {
+      localStorage.setItem('dl_admin_pin', newPin.trim());
+    }
+
     // Read public
     publicLinks.forEach((lnk, i) => {
       lnk.icon = document.getElementById('pub_icon_' + i).value;
       lnk.title = document.getElementById('pub_title_' + i).value;
       lnk.subtitle = document.getElementById('pub_sub_' + i).value;
-      lnk.url = document.getElementById('pub_url_' + i).value;
+      lnk.url = sanitizeUrl(document.getElementById('pub_url_' + i).value);
     });
+
     // Read locked
     Object.keys(lockedItems).forEach(key => {
       lockedItems[key].title = document.getElementById('lck_title_' + key).value;
       lockedItems[key].subtitle = document.getElementById('lck_sub_' + key).value;
-      lockedItems[key].url = document.getElementById('lck_url_' + key).value;
+      lockedItems[key].url = sanitizeUrl(document.getElementById('lck_url_' + key).value);
       lockedItems[key].linkLabel = document.getElementById('lck_label_' + key).value;
       lockedItems[key].password = document.getElementById('lck_pw_' + key).value;
     });
+
     contactData.phone     = document.getElementById('admin_phone').value;
     contactData.email     = document.getElementById('admin_email').value;
     contactData.whatsapp  = document.getElementById('admin_whatsapp').value;
     localStorage.setItem('dl_contact', JSON.stringify(contactData));
     applyContactData();
+
     localStorage.setItem('dl_public', JSON.stringify(publicLinks));
     localStorage.setItem('dl_locked', JSON.stringify(lockedItems));
+
     renderPublicLinks();
     renderLockedCards();
     closeAdmin();
@@ -994,6 +1078,7 @@
 
     if (input.value === item.password) {
       unlocked[currentKey] = true;
+      localStorage.setItem('dl_unlocked', JSON.stringify(unlocked));
       errorMsg.textContent = '';
 
       // Update card UI
@@ -1018,7 +1103,8 @@
 
     } else {
       input.classList.add('error');
-      errorMsg.textContent = '❌ Falsches Passwort. Bitte versuche es erneut.';
+      errorMsg.textContent = 'Falsches Passwort. Bitte versuche es erneut.';
+      if (navigator.vibrate) navigator.vibrate(60);
       setTimeout(() => input.classList.remove('error'), 400);
       input.value = '';
     }
