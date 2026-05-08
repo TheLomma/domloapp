@@ -766,9 +766,15 @@
     
   }
 
-  renderPublicLinks();
-  renderBooking();
-  renderLockedCards();
+  try {
+    renderPublicLinks();
+    renderBooking();
+    renderLockedCards();
+  } catch (e) {
+    console.error(e);
+    const pub = document.getElementById('publicLinksContainer');
+    if (pub) pub.innerHTML = '<div class="link-card" style="opacity:0.7;cursor:default;">Fehler beim Rendern. Bitte Admin-Reset nutzen.</div>';
+  }
 
   // If there are still static public link cards (from older versions), hide them.
   // (Keeping this defensive so the page never shows duplicates.)
@@ -1186,12 +1192,8 @@
     currentKey = null;
   }
 
-  // ── Rate Limit (UI) ─────────────────────────────────────────────────────────function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('active');
-    currentKey = null;
-  }
-
   // ── Rate Limit (UI) ─────────────────────────────────────────────────────────
+ ─────────────────────────────────────────────────────────
   const RATE_LIMIT_MAX_FAILS = 5;
   const RATE_LIMIT_MS = 30 * 1000;
   function getLockoutUntil(key) {
