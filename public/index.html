@@ -673,7 +673,7 @@
 
 <script>
   // ── Config ──────────────────────────────────────────────────────────────────
-  const lockedItems = {
+  let lockedItems = JSON.parse(localStorage.getItem('dl_locked') || 'null') || {
     wp2024: {
       password: 'kreuzvier',
       title: 'Zaubersalon Wuppertal 2024',
@@ -718,15 +718,39 @@
   setInterval(updateClock, 10000);
 
   // ── Render ─────────────────────────────────────────────────────────────────
+  // ── Data (public links are editable via admin) ─────────────────────────────
+  let publicLinks = JSON.parse(localStorage.getItem('dl_public') || 'null') || [
+    { icon:'📸', title:'Instagram', subtitle:'@datlomma', url:'https://www.instagram.com/datlomma' },
+    { icon:'🌐', title:'Website', subtitle:'– bald neu –', url:'#' }
+  ];
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   function renderPublicLinks() {
     const container = document.getElementById('publicLinksContainer');
+    if (!container) return;
     container.innerHTML = '';
-    publicLinks.forEach((lnk, i) => {
+    publicLinks.forEach((lnk) => {
+      // Special case: placeholder website
+      if (!lnk.url || lnk.url === '#') {
+        const div = document.createElement('div');
+        div.className = 'link-card';
+        div.style.cursor = 'default';
+        div.style.opacity = '0.6';
+        div.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${lnk.icon}</div>
+          <div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle || ''}</div></div>
+          <div class="link-arrow" style="font-size:12px;color:rgba(255,255,255,0.2);">✦</div>`;
+        container.appendChild(div);
+        return;
+      }
+
       const a = document.createElement('a');
       a.className = 'link-card';
       a.href = lnk.url;
       a.target = '_blank';
-      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${lnk.icon}</div><div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle}</div></div><div class="link-arrow">›</div>`;
+      a.rel = 'noopener noreferrer';
+      a.innerHTML = `<div class="link-icon" style="background:rgba(255,255,255,0.06);">${lnk.icon}</div>
+        <div class="link-text"><div class="link-title">${lnk.title}</div><div class="link-subtitle">${lnk.subtitle || ''}</div></div>
+        <div class="link-arrow">›</div>`;
       container.appendChild(a);
     });
   }
